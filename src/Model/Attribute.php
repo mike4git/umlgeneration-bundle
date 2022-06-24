@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace UMLGenerationBundle\Model;
 
@@ -7,7 +8,22 @@ class Attribute
     private string $modifier;
     private string $type;
     private string $name;
+    private bool $static;
+    private string $defaultValue = '';
+
     private ?string $additionalInfo = null;
+
+    public function getDefaultValue(): string
+    {
+        return $this->defaultValue;
+    }
+
+    public function setDefaultValue(string $defaultValue): Attribute
+    {
+        $this->defaultValue = $defaultValue;
+
+        return $this;
+    }
 
     public function getModifier(): string
     {
@@ -58,5 +74,17 @@ class Attribute
         $this->additionalInfo = $additionalInfo;
 
         return $this;
+    }
+
+    public function setStatic(bool $static): Attribute
+    {
+        $this->static = $static;
+
+        return $this;
+    }
+
+    public function isStatic(): bool
+    {
+        return $this->static;
     }
 }

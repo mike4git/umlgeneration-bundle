@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace UMLGenerationBundle\Tests\Unit\Formatter;
 
@@ -20,16 +21,40 @@ class AttributeFormatterTest extends TestCase
      */
     public function sampleAttribute(): iterable
     {
+        yield 'Simple static Attribute' => [
+            'name', 'string|null', 'protected', true, '', null,
+            <<<EXPECTED
+            <tr><td style="text-decoration: underline"># name</td><td>string|null</td></tr>
+            EXPECTED,
+        ];
         yield 'Simple Attribute' => [
-            'name', 'string|null', 'protected', null,
+            'name', 'string|null', 'protected', false, '', null,
             <<<EXPECTED
             <tr><td># name</td><td>string|null</td></tr>
             EXPECTED,
         ];
+        yield 'Simple private Attribute' => [
+            'name', 'string|null', 'private', false, '', null,
+            <<<EXPECTED
+            <tr><td>- name</td><td>string|null</td></tr>
+            EXPECTED,
+        ];
+        yield 'Simple public Attribute' => [
+            'name', 'string|null', 'public', false, '', null,
+            <<<EXPECTED
+            <tr><td>+ name</td><td>string|null</td></tr>
+            EXPECTED,
+        ];
         yield 'Simple localized Attribute' => [
-            'name', 'string|null', 'protected', 'localized',
+            'name', 'string|null', 'protected', false, '', 'localized',
             <<<EXPECTED
             <tr><td># name</td><td>string|null (localized)</td></tr>
+            EXPECTED,
+        ];
+        yield 'Simple Attribute with default value' => [
+            'name', 'string|null', 'protected', false, '"Hallo Welt!"', null,
+            <<<EXPECTED
+            <tr><td># name</td><td>string|null = "Hallo Welt!"</td></tr>
             EXPECTED,
         ];
     }
@@ -37,15 +62,13 @@ class AttributeFormatterTest extends TestCase
     /**
      * @test
      * @dataProvider sampleAttribute
-     *
-     * @param $name
-     * @param $type
-     * @param $modifier
      */
     public function format_regular_case(
         string $name,
         string $type,
         string $modifier,
+        bool $static,
+        string $defaultValue,
         ?string $additionalInfo,
         string $expected,
     ): void {
@@ -53,7 +76,10 @@ class AttributeFormatterTest extends TestCase
         $attribute = new Attribute();
         $attribute->setName($name)
             ->setType($type)
-            ->setModifier($modifier);
+            ->setModifier($modifier)
+            ->setStatic($static)
+            ->setDefaultValue($defaultValue)
+        ;
 
         if ($additionalInfo) {
             $attribute->setAdditionalInfo($additionalInfo);
