@@ -6,6 +6,7 @@ services:
     volumes:
     - ./:/app
     working_dir: /app
+    user: ${USER_ID:-1000}
     environment:
       XDEBUG_MODE: debug
     expose:
