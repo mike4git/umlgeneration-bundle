@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  php:
+    build:
+      context: .docker
+    volumes:
+    - ./:/app
+    environment:
+      XDEBUG_MODE: debug
+    expose:
+      - 9003 # xdebug 3 port!
