@@ -38,7 +38,7 @@ class Class2UMLService
         foreach ($properties as $property) {
             $boxAttribute = new Attribute();
             $boxAttribute->setName($property->getName())
-                ->setType($property->getType()?->getName() ?? '')
+                ->setType($this->determineType($property))
                 ->setStatic($property->isStatic())
                 ->setModifier($this->mapModifiersToText[$property->getModifiers() % 8]);
             $classBox->addAttribute($boxAttribute);
@@ -52,5 +52,15 @@ class Class2UMLService
     public function getClasses(): array
     {
         return $this->classes;
+    }
+
+    private function determineType(\ReflectionProperty $property): string
+    {
+        if ($property->getType() === null
+            || !($property->getType() instanceof \ReflectionNamedType)) {
+            return '';
+        }
+
+        return $property->getType()->getName();
     }
 }
