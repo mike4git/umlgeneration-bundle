@@ -42,6 +42,6 @@
     </logging>
 
     <extensions>
-        <extension class="UMLGenerationBundle\Test\Hook\BypassFinalHook"/>
+        <extension class="UMLGenerationBundle\Tests\Hook\BypassFinalHook"/>
     </extensions>
 </phpunit>
