@@ -1,0 +1,4 @@
+# JetBrains IDEs
+/.idea/
+
+composer.lock

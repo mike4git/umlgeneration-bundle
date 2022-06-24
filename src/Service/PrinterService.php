@@ -1,0 +1,58 @@
+<?php
+
+namespace UMLGenerationBundle\Service;
+
+use UMLGenerationBundle\Formatter\ClassFormatter;
+use UMLGenerationBundle\Formatter\RelationsFormatter;
+use UMLGenerationBundle\Model\ObjectClass;
+use UMLGenerationBundle\Model\Relation;
+
+class PrinterService
+{
+    public function __construct(
+        private ClassFormatter     $classFormatter,
+        private RelationsFormatter $relationsFormatter
+    )
+    {
+    }
+
+    /**
+     * @param ObjectClass[] $classes
+     * @param Relation[] $relations
+     * @return string
+     */
+    public function print(array $classes, array $relations)
+    {
+        $output = <<<OUTPUT
+        digraph {
+        %s
+        %s
+        }
+        OUTPUT;
+
+        return sprintf($output, $this->printClasses($classes), $this->printRelations($relations));
+    }
+
+    /**
+     * @param ObjectClass[] $classes
+     * @return string
+     */
+    private function printClasses(array $classes): string
+    {
+        $result = [];
+        foreach ($classes as $class) {
+            $result[] = $this->classFormatter->format($class);
+        }
+        return implode(PHP_EOL, $result);
+    }
+
+    /**
+     * @param Relation[] $relations
+     * @return string
+     */
+    private function printRelations(array $relations): string
+    {
+        return $this->relationsFormatter->format($relations);
+    }
+
+}

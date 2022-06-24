@@ -1,0 +1,3 @@
+neusta_pimcore_uml_generation_homepage:
+    path:     /neusta_pimcore_uml_generation
+    defaults: { _controller: NeustaPimcoreUMLGenerationBundle\Controller\DefaultController:indexAction }
