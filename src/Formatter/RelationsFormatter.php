@@ -8,24 +8,23 @@ class RelationsFormatter
 {
     /**
      * @param Relation[] $relations
-     * @return string
      */
     public function format(array $relations): string
     {
         $result = [];
         foreach ($relations as $relation) {
-            $name = sprintf("%s -> %s", $relation->getSourceType(), $relation->getTargetType());
+            $name = sprintf('%s -> %s', $relation->getSourceType(), $relation->getTargetType());
 
-            $dir = sprintf("dir=%s", $relation->isBidirectional() ? 'none' : 'both');
-            $arrow= sprintf("arrowtail=%s", $relation->isAggregation() ? 'odiamond' : 'normal');
-            $label = sprintf('label="%s %s"', $relation->getSourceRolename(), $this->determineCardinality($relation) );
+            $dir = sprintf('dir=%s', $relation->isBidirectional() ? 'none' : 'both');
+            $arrow = sprintf('arrowtail=%s', $relation->isAggregation() ? 'odiamond' : 'normal');
+            $label = sprintf('label="%s %s"', $relation->getSourceRolename(), $this->determineCardinality($relation));
 
             $result[] = sprintf(
-                "%s [%s %s %s];",
+                '%s [%s %s %s];',
                 $name,
                 $dir,
                 $arrow,
-                $label
+                $label,
             );
         }
 
@@ -34,14 +33,13 @@ class RelationsFormatter
 
     private function determineCardinality(Relation $relation): string
     {
-        $result = "(%s..%s)";
+        $result = '(%s..%s)';
         $minimum = $relation->getMinimum() ?: '0';
         $maximum = $relation->getMaximum() ?: 'n';
         if ($minimum === $maximum) {
-            return sprintf("(%s)", $minimum);
+            return sprintf('(%s)', $minimum);
         }
+
         return sprintf($result, $minimum, $maximum);
     }
-
-
 }

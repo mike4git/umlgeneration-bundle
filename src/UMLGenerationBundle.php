@@ -9,7 +9,7 @@ class UMLGenerationBundle extends AbstractPimcoreBundle
     public function getJsPaths()
     {
         return [
-            '/bundles/umlgeneration/js/pimcore/startup.js'
+            '/bundles/umlgeneration/js/pimcore/startup.js',
         ];
     }
 }

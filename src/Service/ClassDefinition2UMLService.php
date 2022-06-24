@@ -2,14 +2,15 @@
 
 namespace UMLGenerationBundle\Service;
 
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Localizedfields;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
-use Pimcore\Model\DataObject\ClassDefinition;
-use Pimcore\Model\DataObject\ClassDefinition\Data\Localizedfields;
 
 class ClassDefinition2UMLService
 {
+    private const UNKNOWN = 'unknown';
     /** @var Relation[] */
     private array $relations;
 
@@ -25,8 +26,8 @@ class ClassDefinition2UMLService
     public function generateClassBox(ClassDefinition $classDefinition): void
     {
         $class = new ObjectClass();
-        $class->setClassName($classDefinition->getName())
-            ->setClassId($classDefinition->getId())
+        $class->setClassName($classDefinition->getName() ?? self::UNKNOWN)
+            ->setClassId($classDefinition->getId() ?? self::UNKNOWN)
             ->setStereotype('DataObject');
 
         $fieldDefinitions = $classDefinition->getFieldDefinitions();
@@ -43,7 +44,7 @@ class ClassDefinition2UMLService
                 foreach ($locFieldDef->getChildren() as $definition) {
                     $attribute = new Attribute();
                     $attribute->setName($definition->getName())
-                        ->setType($definition->getPhpdocReturnType())
+                        ->setType($definition->getPhpdocReturnType() ?? self::UNKNOWN)
                         ->setModifier('protected')
                         ->setAdditionalInfo('localized');
                     $class->addAttribute($attribute);
@@ -52,7 +53,7 @@ class ClassDefinition2UMLService
                 $attribute = new Attribute();
                 $attribute->setName($key)
                     ->setModifier('protected')
-                    ->setType($fieldDefinition->getPhpdocReturnType());
+                    ->setType($fieldDefinition->getPhpdocReturnType() ?? self::UNKNOWN);
                 $class->addAttribute($attribute);
             }
         }
@@ -67,17 +68,19 @@ class ClassDefinition2UMLService
                 $relation = new Relation();
                 $relation->setAggregation(true);
 
-                if ($this->isReverseObjectRelation($fieldDefinition)) {
+                if ($fieldDefinition instanceof ClassDefinition\Data\ReverseObjectRelation) {
                     $this->addReverseRelation($fieldDefinition, $relation, $classDefinition);
-                } else if ($this->isManyToOneObjectRelation($fieldDefinition)) {
+                } elseif ($this->isManyToOneObjectRelation($fieldDefinition)) {
                     $relation->setMaximum(1);
                     $this->addRelation($fieldDefinition, $relation, $classDefinition);
-                } else if ($this->isNonReverseManyToManyObjectRelation($fieldDefinition)
+                } elseif ($this->isNonReverseManyToManyObjectRelation($fieldDefinition)
                 ) {
-                    if ($fieldDefinition->getMaxItems() > 0) {
-                        $relation->setMaximum($fieldDefinition->getMaxItems());
+                    /** @var ClassDefinition\Data\ManyToManyRelation|ClassDefinition\Data\ManyToManyObjectRelation $manyToManyRelation */
+                    $manyToManyRelation = $fieldDefinition;
+                    if ($manyToManyRelation->getMaxItems() > 0) {
+                        $relation->setMaximum($manyToManyRelation->getMaxItems());
                     }
-                    $this->addRelation($fieldDefinition, $relation, $classDefinition);
+                    $this->addRelation($manyToManyRelation, $relation, $classDefinition);
                 }
             }
         }
@@ -99,84 +102,54 @@ class ClassDefinition2UMLService
         return $this->classes;
     }
 
-    /**
-     * @param mixed $fieldDefinition
-     * @param Relation $relation
-     * @param ClassDefinition $classDefinition
-     * @return void
-     */
     private function addRelation(mixed $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
     {
         // TODO Check cases where $fieldDefinition->getClasses() has more than one item
         /** @var string $class */
         $class = $fieldDefinition->getClasses()[0]['classes'];
-        $relation->setSourceType($classDefinition->getName())
+        $relation->setSourceType($classDefinition->getName() ?? self::UNKNOWN)
             ->setTargetType($class)
             ->setSourceRolename($fieldDefinition->getTitle())
             ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
 
-        $relationsKey = sprintf("%s.%s - %s", $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
+        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
 
         // if relation already exists it must be bidirectional
-        if (array_key_exists($relationsKey, $this->relations)) {
+        if (\array_key_exists($relationsKey, $this->relations)) {
             $relation->setBidirectional(true);
         }
         $this->relations[$relationsKey] = $relation;
     }
 
-    /**
-     * @param ClassDefinition\Data\ReverseObjectRelation $fieldDefinition
-     * @param Relation $relation
-     * @param ClassDefinition $classDefinition
-     * @return void
-     */
     private function addReverseRelation(ClassDefinition\Data\ReverseObjectRelation $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
     {
-        $relation->setSourceType($fieldDefinition->getOwnerClassName())
+        $relation->setSourceType($fieldDefinition->getOwnerClassName() ?? self::UNKNOWN)
             ->setSourceRolename($fieldDefinition->getOwnerFieldName())
-            ->setTargetType($classDefinition->getName());
+            ->setTargetType($classDefinition->getName() ?? self::UNKNOWN);
 
-        $relationsKey = sprintf("%s.%s - %s", $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
+        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
 
         // if relation exists already merge it otherwise
-        if (array_key_exists($relationsKey, $this->relations)) {
+        if (\array_key_exists($relationsKey, $this->relations)) {
             $relationToMerge = $this->relations[$relationsKey];
             $relationToMerge->setBidirectional(true);
         } else {
             // add new relation
             $this->relations[$relationsKey] = $relation;
         }
-
     }
 
-    /**
-     * @param ClassDefinition\Data $fieldDefinition
-     * @return bool
-     */
     private function isManyToOneObjectRelation(ClassDefinition\Data $fieldDefinition): bool
     {
         return $fieldDefinition instanceof ClassDefinition\Data\ManyToOneRelation
             && $fieldDefinition->getObjectsAllowed();
     }
 
-    /**
-     * @param ClassDefinition\Data $fieldDefinition
-     * @return bool
-     */
     private function isNonReverseManyToManyObjectRelation(ClassDefinition\Data $fieldDefinition): bool
     {
         return ($fieldDefinition instanceof ClassDefinition\Data\ManyToManyRelation ||
                 $fieldDefinition instanceof ClassDefinition\Data\ManyToManyObjectRelation)
             && !($fieldDefinition instanceof ClassDefinition\Data\ReverseObjectRelation)
             && $fieldDefinition->getObjectsAllowed();
-    }
-
-    /**
-     * @param ClassDefinition\Data $fieldDefinition
-     * @return bool
-     */
-    private function isReverseObjectRelation(ClassDefinition\Data $fieldDefinition): bool
-    {
-        return $fieldDefinition instanceof ClassDefinition\Data\ReverseObjectRelation;
     }
 }

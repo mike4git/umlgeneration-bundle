@@ -10,8 +10,9 @@ class AttributeFormatter
     {
         $additionalInfo = '';
         if ($attribute->getAdditionalInfo()) {
-            $additionalInfo = sprintf(" (%s)", $attribute->getAdditionalInfo());
+            $additionalInfo = sprintf(' (%s)', $attribute->getAdditionalInfo());
         }
+
         return sprintf(
             <<<TABLEROW
             <tr><td>%s %s</td><td>%s%s</td></tr>
@@ -19,7 +20,7 @@ class AttributeFormatter
             '#',
             $attribute->getName(),
             $attribute->getType(),
-            $additionalInfo
+            $additionalInfo,
         );
     }
 }

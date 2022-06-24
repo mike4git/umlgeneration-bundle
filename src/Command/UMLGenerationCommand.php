@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace UMLGenerationBundle\Command;
 
-use UMLGenerationBundle\Formatter\AttributeFormatter;
-use UMLGenerationBundle\Formatter\ClassFormatter;
-use UMLGenerationBundle\Formatter\RelationsFormatter;
-use UMLGenerationBundle\Repository\ClassDefinitionsRepositoryInterface;
-use UMLGenerationBundle\Service\ClassDefinition2UMLService;
-use UMLGenerationBundle\Service\PrinterService;
 use Pimcore\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use UMLGenerationBundle\Repository\ClassDefinitionsRepositoryInterface;
+use UMLGenerationBundle\Service\ClassDefinition2UMLService;
+use UMLGenerationBundle\Service\PrinterService;
 
 class UMLGenerationCommand extends AbstractCommand
 {
@@ -23,9 +20,8 @@ class UMLGenerationCommand extends AbstractCommand
         string $name = null,
         private ClassDefinitionsRepositoryInterface $classDefinitionsRepository,
         private ClassDefinition2UMLService $classDefinition2UMLService,
-        private PrinterService $printerService
-    )
-    {
+        private PrinterService $printerService,
+    ) {
         parent::__construct($name);
     }
 
@@ -34,14 +30,14 @@ class UMLGenerationCommand extends AbstractCommand
         $this->setName(self::COMMAND_NAME)
             ->setDescription('Creates a dot file which can converted to an image by graphviz.')
             ->setHelp('exports all class definitions and generate a dot file.'
-                . \PHP_EOL . 'This dot file can be converted into several formats by graphviz');
+                . \PHP_EOL . 'This dot file can be converted into several formats by graphviz', );
         $this
             ->addOption(
                 'outputfile',
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'name of the outputfile (without suffix .dot) which will be generated'
-                .PHP_EOL . 'by default  \<definitions\> will be used.'
+                . PHP_EOL . 'by default  \<definitions\> will be used.',
             );
     }
 
@@ -63,8 +59,8 @@ class UMLGenerationCommand extends AbstractCommand
             $outputfile . '.dot',
             $this->printerService->print(
                 $this->classDefinition2UMLService->getClasses(),
-                $this->classDefinition2UMLService->getRelations()
-            )
+                $this->classDefinition2UMLService->getRelations(),
+            ),
         );
 
         return 0;

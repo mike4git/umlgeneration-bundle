@@ -6,12 +6,11 @@ use UMLGenerationBundle\Model\ObjectClass;
 
 class ClassFormatter
 {
-    const INDENTATION = '    ';
+    public const INDENTATION = '    ';
 
     public function __construct(
-        private AttributeFormatter $attributeFormatter
-    )
-    {
+        private AttributeFormatter $attributeFormatter,
+    ) {
     }
 
     public function format(ObjectClass $objectClass): string
@@ -27,9 +26,11 @@ class ClassFormatter
             HTML,
             $objectClass->getClassName(),
             $objectClass->getClassId(),
-            $this->formatAttributes($objectClass)
+            $this->formatAttributes($objectClass),
         );
-        return sprintf(<<<BOX
+
+        return sprintf(
+            <<<BOX
             %s [
                 shape=plain
                 label=<
@@ -38,14 +39,12 @@ class ClassFormatter
             ];
             BOX,
             $objectClass->getClassName(),
-            $labelDeclaration
+            $labelDeclaration,
         );
-
     }
 
     private function formatAttributes(ObjectClass $objectClass): string
     {
-
         $template = <<<ATTRIBUTES_TABLE
             <table border="0" cellborder="0" cellspacing="0">
                             %s</table>
@@ -57,8 +56,9 @@ class ClassFormatter
             foreach ($objectClass->getAttributes() as $attribute) {
                 $result[] = $this->attributeFormatter->format($attribute);
             }
-            $attributesAsString = self::INDENTATION . implode(PHP_EOL . str_repeat(self::INDENTATION, 5), $result) . PHP_EOL. str_repeat(self::INDENTATION, 4);
+            $attributesAsString = self::INDENTATION . implode(PHP_EOL . str_repeat(self::INDENTATION, 5), $result) . PHP_EOL . str_repeat(self::INDENTATION, 4);
         }
+
         return sprintf($template, $attributesAsString);
     }
 }

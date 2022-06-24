@@ -2,10 +2,10 @@
 
 namespace UMLGenerationBundle\Tests\Unit\Formatter;
 
+use PHPUnit\Framework\TestCase;
 use UMLGenerationBundle\Formatter\AttributeFormatter;
 use UMLGenerationBundle\Formatter\ClassFormatter;
 use UMLGenerationBundle\Model\ObjectClass;
-use PHPUnit\Framework\TestCase;
 
 class ClassFormatterTest extends TestCase
 {
@@ -16,9 +16,12 @@ class ClassFormatterTest extends TestCase
         $this->formatter = new ClassFormatter(new AttributeFormatter());
     }
 
-    public function sampleClass()
+    /**
+     * @return iterable<string, array<mixed>>
+     */
+    public function sampleClass(): iterable
     {
-        yield "Simple Class without fields" => [
+        yield 'Simple Class without fields' => [
             'MyType', 'my_type', 'DataObject',
             <<<EXPECTED
             MyType [
@@ -33,29 +36,32 @@ class ClassFormatterTest extends TestCase
                     </table>
                 >
             ];
-            EXPECTED
+            EXPECTED,
         ];
     }
 
     /**
      * @test
      * @dataProvider sampleClass
+     *
      * @param $className
      * @param $classId
      * @param $stereotype
-     * @param string $expected
      */
     public function format_regular_case(
-        string $className, string $classId, string $stereotype, string $expected
-    ): void
-    {
+        string $className,
+        string $classId,
+        string $stereotype,
+        string $expected,
+    ): void {
         $objectClass = new ObjectClass();
         $objectClass->setClassName($className)
             ->setClassId($classId)
             ->setStereotype($stereotype);
 
-        self::assertEquals($expected,
-            $this->formatter->format($objectClass)
+        self::assertEquals(
+            $expected,
+            $this->formatter->format($objectClass),
         );
     }
 }

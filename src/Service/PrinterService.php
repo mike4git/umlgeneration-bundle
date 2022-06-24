@@ -10,15 +10,15 @@ use UMLGenerationBundle\Model\Relation;
 class PrinterService
 {
     public function __construct(
-        private ClassFormatter     $classFormatter,
-        private RelationsFormatter $relationsFormatter
-    )
-    {
+        private ClassFormatter $classFormatter,
+        private RelationsFormatter $relationsFormatter,
+    ) {
     }
 
     /**
      * @param ObjectClass[] $classes
      * @param Relation[] $relations
+     *
      * @return string
      */
     public function print(array $classes, array $relations)
@@ -35,7 +35,6 @@ class PrinterService
 
     /**
      * @param ObjectClass[] $classes
-     * @return string
      */
     private function printClasses(array $classes): string
     {
@@ -43,16 +42,15 @@ class PrinterService
         foreach ($classes as $class) {
             $result[] = $this->classFormatter->format($class);
         }
+
         return implode(PHP_EOL, $result);
     }
 
     /**
      * @param Relation[] $relations
-     * @return string
      */
     private function printRelations(array $relations): string
     {
         return $this->relationsFormatter->format($relations);
     }
-
 }

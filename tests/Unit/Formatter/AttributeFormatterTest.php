@@ -2,12 +2,9 @@
 
 namespace UMLGenerationBundle\Tests\Unit\Formatter;
 
-use UMLGenerationBundle\Formatter\AttributeFormatter;
-use UMLGenerationBundle\Formatter\ClassFormatter;
-use UMLGenerationBundle\Model\Attribute;
-use UMLGenerationBundle\Model\ObjectClass;
-use UMLGenerationBundle\Model\Relation;
 use PHPUnit\Framework\TestCase;
+use UMLGenerationBundle\Formatter\AttributeFormatter;
+use UMLGenerationBundle\Model\Attribute;
 
 class AttributeFormatterTest extends TestCase
 {
@@ -18,34 +15,40 @@ class AttributeFormatterTest extends TestCase
         $this->formatter = new AttributeFormatter();
     }
 
-    public function sampleAttribute()
+    /**
+     * @return iterable<string, array<mixed>>
+     */
+    public function sampleAttribute(): iterable
     {
-        yield "Simple Attribute" => [
-            'name', 'string|null', 'protected',null,
+        yield 'Simple Attribute' => [
+            'name', 'string|null', 'protected', null,
             <<<EXPECTED
             <tr><td># name</td><td>string|null</td></tr>
-            EXPECTED
+            EXPECTED,
         ];
-        yield "Simple localized Attribute" => [
-            'name', 'string|null', 'protected','localized',
+        yield 'Simple localized Attribute' => [
+            'name', 'string|null', 'protected', 'localized',
             <<<EXPECTED
             <tr><td># name</td><td>string|null (localized)</td></tr>
-            EXPECTED
+            EXPECTED,
         ];
     }
 
     /**
      * @test
      * @dataProvider sampleAttribute
+     *
      * @param $name
      * @param $type
      * @param $modifier
-     * @param string $expected
      */
     public function format_regular_case(
-        string $name, string $type, string $modifier, ?string $additionalInfo, string $expected
-    ): void
-    {
+        string $name,
+        string $type,
+        string $modifier,
+        ?string $additionalInfo,
+        string $expected,
+    ): void {
         /** @var Attribute $attribute */
         $attribute = new Attribute();
         $attribute->setName($name)
@@ -55,8 +58,9 @@ class AttributeFormatterTest extends TestCase
         if ($additionalInfo) {
             $attribute->setAdditionalInfo($additionalInfo);
         }
-        self::assertEquals($expected,
-            $this->formatter->format($attribute)
+        self::assertEquals(
+            $expected,
+            $this->formatter->format($attribute),
         );
     }
 }
