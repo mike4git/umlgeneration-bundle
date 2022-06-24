@@ -2,10 +2,10 @@ version: '3.4'
 
 services:
   php:
-    build:
-      context: .docker
+    image: pimcore/pimcore:PHP8.1-cli-debug
     volumes:
     - ./:/app
+    working_dir: /app
     environment:
       XDEBUG_MODE: debug
     expose:
