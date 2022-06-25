@@ -58,11 +58,11 @@ class Class2UMLServiceTest extends TestCase
      */
     public function generateClassBoxForSimpleClass(int $attributeIndex, string $name, string $type, string $modifier, bool $static): void
     {
-        $this->service->generateClassBox(TestKlasse::class);
+        $this->service->generateClassBox(TestClass::class);
 
         $expected = new ObjectClass();
-        $expected->setClassName('TestKlasse');
-        $expected->setClassId('UMLGenerationBundle\Tests\Unit\Service\TestKlasse');
+        $expected->setClassName('TestClass');
+        $expected->setClassId('UMLGenerationBundle\Tests\Unit\Service\TestClass');
         $expected->setStereotype('');
 
         $actualClassBox = $this->service->getClasses()[0];
@@ -95,7 +95,7 @@ class Class2UMLServiceTest extends TestCase
     }
 }
 
-class TestKlasse
+class TestClass
 {
     public float $attribute3;
     protected int $attribute2;
@@ -106,4 +106,14 @@ class TestKlasse
     private array $arrayAttribute;  // @phpstan-ignore-line
     private array $arrayWithoutDocAttribute;  // @phpstan-ignore-line
     private $attributeWithoutType;  // @phpstan-ignore-line
+}
+
+class TestClassForRelations
+{
+    private TestClass $parent;
+
+    private ?TestClass $nullableParent;
+
+    /** @var TestClass[] */
+    private array $children;
 }
