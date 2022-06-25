@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  php:
+    image: pimcore/pimcore:PHP8.1-cli-debug
+    volumes:
+    - ./:/app
+    working_dir: /app
+    user: ${USER_ID:-1000}
+    environment:
+      XDEBUG_MODE: debug
+    expose:
+      - 9003 # xdebug 3 port!
