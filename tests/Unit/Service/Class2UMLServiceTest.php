@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace UMLGenerationBundle\Tests\Unit\Service;
 
+use const false;
 use PHPUnit\Framework\TestCase;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
@@ -18,9 +19,44 @@ class Class2UMLServiceTest extends TestCase
     }
 
     /**
-     * @test
+     * @return iterable<mixed>
      */
-    public function generateClassBoxForSimpleClass(): void
+    public function sampleAttributes(): iterable
+    {
+        yield 'public float $attribute3;' => [
+            0, 'attribute3', 'float', 'public', false,
+        ];
+        yield 'protected int $attribute2;' => [
+            1, 'attribute2', 'int', 'protected', false,
+        ];
+        yield 'protected int|string|null $unionTypedAttribute;' => [
+            2, 'unionTypedAttribute', 'string|int|null', 'protected', false,
+        ];
+        yield 'private string $attribute1;' => [
+            3, 'attribute1', 'string', 'private', false,
+        ];
+        yield 'private static $classAttribute;' => [
+            4, 'classAttribute', Class2UMLService::UNTYPED, 'private', true,
+        ];
+        yield <<<DECL
+            /** @var string[] */
+            private array arrayAttribute
+            DECL => [
+            5, 'arrayAttribute', 'string[]', 'private', false,
+        ];
+        yield 'private array $arrayWithoutDocAttribute;' => [
+            6, 'arrayWithoutDocAttribute', 'array', 'private', false,
+        ];
+        yield 'private $attributeWithoutType;' => [
+            7, 'attributeWithoutType', Class2UMLService::UNTYPED, 'private', false,
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider sampleAttributes
+     */
+    public function generateClassBoxForSimpleClass(int $attributeIndex, string $name, string $type, string $modifier, bool $static): void
     {
         $this->service->generateClassBox(TestKlasse::class);
 
@@ -35,45 +71,27 @@ class Class2UMLServiceTest extends TestCase
         self::assertEquals($expected->getStereotype(), $actualClassBox->getStereotype());
 
         $classBox = $actualClassBox;
-        self::assertCount(4, $classBox->getAttributes());
 
-        $expectedAttribute = new Attribute();
-
-        $expectedAttribute->setName('attribute3');
-        $expectedAttribute->setType('float');
-        $expectedAttribute->setModifier('public');
-        $expectedAttribute->setStatic(false);
+        $expectedAttribute = $this->createExpectedAttribute($name, $type, $modifier, $static);
         self::assertEquals(
             $expectedAttribute,
-            $classBox->getAttributes()[0],
+            $classBox->getAttributes()[$attributeIndex],
         );
+    }
 
-        $expectedAttribute->setName('attribute2');
-        $expectedAttribute->setType('int');
-        $expectedAttribute->setModifier('protected');
-        $expectedAttribute->setStatic(false);
-        self::assertEquals(
-            $expectedAttribute,
-            $classBox->getAttributes()[1],
-        );
-
-        $expectedAttribute->setName('attribute1');
-        $expectedAttribute->setType('string');
-        $expectedAttribute->setModifier('private');
-        $expectedAttribute->setStatic(false);
-        self::assertEquals(
-            $expectedAttribute,
-            $classBox->getAttributes()[2],
-        );
-
-        $expectedAttribute->setName('classAttribute');
-        $expectedAttribute->setType('');
-        $expectedAttribute->setModifier('private');
-        $expectedAttribute->setStatic(true);
-        self::assertEquals(
-            $expectedAttribute,
-            $classBox->getAttributes()[3],
-        );
+    /**
+     * @param $name
+     * @param $type
+     * @param $modifier
+     * @param $static
+     */
+    private function createExpectedAttribute(string $name, string $type, string $modifier, bool $static): Attribute
+    {
+        return (new Attribute())
+            ->setName($name)
+            ->setType($type)
+            ->setModifier($modifier)
+            ->setStatic($static);
     }
 }
 
@@ -81,8 +99,11 @@ class TestKlasse
 {
     public float $attribute3;
     protected int $attribute2;
-    // @phpstan-ignore-next-line
-    private string $attribute1;
-    // @phpstan-ignore-next-line
-    private static $classAttribute;
+    protected int|string|null $unionTypedAttribute;
+    private string $attribute1; // @phpstan-ignore-line
+    private static $classAttribute;  // @phpstan-ignore-line
+    /** @var string[] */
+    private array $arrayAttribute;  // @phpstan-ignore-line
+    private array $arrayWithoutDocAttribute;  // @phpstan-ignore-line
+    private $attributeWithoutType;  // @phpstan-ignore-line
 }

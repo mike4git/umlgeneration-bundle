@@ -9,6 +9,7 @@ use UMLGenerationBundle\Model\ObjectClass;
 
 class Class2UMLService
 {
+    public const UNTYPED = 'untyped';
     /** @var ObjectClass[] */
     private array $classes = [];
 
@@ -56,11 +57,25 @@ class Class2UMLService
 
     private function determineType(\ReflectionProperty $property): string
     {
-        if ($property->getType() === null
-            || !($property->getType() instanceof \ReflectionNamedType)) {
-            return '';
+        if ($property->hasType()) {
+            if ($property->getType() instanceof \ReflectionNamedType) {
+                $declaredType = $property->getType()->getName();
+                if ($declaredType === 'array') {
+                    $matches = [];
+                    if ($property->getDocComment() && preg_match("/@var[\s]*(\S*)/", $property->getDocComment(), $matches)) {
+                        return $matches[1];
+                    }
+
+                    return $declaredType;
+                }
+
+                return $declaredType;
+            }
+            if ($property->getType() instanceof \ReflectionUnionType) {
+                return implode('|', $property->getType()->getTypes());
+            }
         }
 
-        return $property->getType()->getName();
+        return self::UNTYPED;
     }
 }
