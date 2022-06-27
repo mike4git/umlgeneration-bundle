@@ -56,11 +56,3 @@ Note that this will generate a myDotfileName.dot file
 #### Generate Graph:
 ```bash
 $ dot -Tsvg myDotfileName.dot -o image.svg
-```
-
-#### How to use the "dot" command:
-```bash
-dot -T${fileType} ${filename}.dot -o ${outputFile}
-```
-
-Note that this will generate a svg.
