@@ -25,6 +25,7 @@ class ClassDefinition2UMLService
 
     public function __construct()
     {
+        $this->fieldDefinitionHandler = [];
         $this->relations = [];
         $this->classes = [];
     }

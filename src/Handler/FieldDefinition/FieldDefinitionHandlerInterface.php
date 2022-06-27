@@ -1,6 +1,8 @@
 <?php
 
-namespace UMLGenerationBundle\Handler\Relation;
+declare(strict_types=1);
+
+namespace UMLGenerationBundle\Handler\FieldDefinition;
 
 use Pimcore\Model\DataObject\ClassDefinition\Data;
 
