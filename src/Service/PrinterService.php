@@ -10,10 +10,15 @@ use UMLGenerationBundle\Model\Relation;
 
 class PrinterService
 {
+    private ClassFormatter $classFormatter;
+    private RelationsFormatter $relationsFormatter;
+
     public function __construct(
-        private ClassFormatter $classFormatter,
-        private RelationsFormatter $relationsFormatter,
+        ClassFormatter $classFormatter,
+        RelationsFormatter $relationsFormatter
     ) {
+        $this->relationsFormatter = $relationsFormatter;
+        $this->classFormatter = $classFormatter;
     }
 
     /**

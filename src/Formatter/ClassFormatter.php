@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace UMLGenerationBundle\Formatter;
@@ -8,10 +9,12 @@ use UMLGenerationBundle\Model\ObjectClass;
 class ClassFormatter
 {
     public const INDENTATION = '    ';
+    private AttributeFormatter $attributeFormatter;
 
     public function __construct(
-        private AttributeFormatter $attributeFormatter,
+        AttributeFormatter $attributeFormatter
     ) {
+        $this->attributeFormatter = $attributeFormatter;
     }
 
     public function format(ObjectClass $objectClass): string

@@ -15,13 +15,20 @@ use UMLGenerationBundle\Service\PrinterService;
 class UMLGenerationCommand extends AbstractCommand
 {
     private const COMMAND_NAME = 'uml:generate';
+    private ClassDefinitionsRepositoryInterface $classDefinitionsRepository;
+    private ClassDefinition2UMLService $classDefinition2UMLService;
+    private PrinterService $printerService;
 
     public function __construct(
-        string $name = null,
-        private ClassDefinitionsRepositoryInterface $classDefinitionsRepository,
-        private ClassDefinition2UMLService $classDefinition2UMLService,
-        private PrinterService $printerService,
+        ClassDefinitionsRepositoryInterface $classDefinitionsRepository,
+        ClassDefinition2UMLService $classDefinition2UMLService,
+        PrinterService $printerService,
+        string $name = null
     ) {
+        $this->printerService = $printerService;
+        $this->classDefinition2UMLService = $classDefinition2UMLService;
+        $this->classDefinitionsRepository = $classDefinitionsRepository;
+
         parent::__construct($name);
     }
 
