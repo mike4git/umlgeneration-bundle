@@ -9,22 +9,22 @@ services:
         # if you need to do this, you can override this setting on individual services
         public: false
 
-    Neusta\Pimcore\UMLGenerationBundle\Command\UMLGenerationCommand:
+    UMLGenerationBundle\Command\UMLGenerationCommand:
         arguments:
-            $classDefinitionsRepository: '@Neusta\Pimcore\UMLGenerationBundle\Repository\ClassDefinitionsRepositoryInterface'
+            $classDefinitionsRepository: '@UMLGenerationBundle\Repository\ClassDefinitionsRepositoryInterface'
         tags: [ 'console.command' ]
 
-    Neusta\Pimcore\UMLGenerationBundle\Repository\ClassDefinitionsRepositoryInterface:
-        class: Neusta\Pimcore\UMLGenerationBundle\Repository\ClassDefinitionsRepository
+    UMLGenerationBundle\Repository\ClassDefinitionsRepositoryInterface:
+        class: UMLGenerationBundle\Repository\ClassDefinitionsRepository
 
-    Neusta\Pimcore\UMLGenerationBundle\Formatter\RelationsFormatter: ~
+    UMLGenerationBundle\Formatter\RelationsFormatter: ~
 
-    Neusta\Pimcore\UMLGenerationBundle\Formatter\AttributeFormatter: ~
+    UMLGenerationBundle\Formatter\AttributeFormatter: ~
 
-    Neusta\Pimcore\UMLGenerationBundle\Formatter\ClassFormatter:
+    UMLGenerationBundle\Formatter\ClassFormatter:
         arguments:
-            $attributeFormatter: '@Neusta\Pimcore\UMLGenerationBundle\Formatter\AttributeFormatter'
+            $attributeFormatter: '@UMLGenerationBundle\Formatter\AttributeFormatter'
 
-    Neusta\Pimcore\UMLGenerationBundle\Service\PrinterService: ~
+    UMLGenerationBundle\Service\PrinterService: ~
 
-    Neusta\Pimcore\UMLGenerationBundle\Service\ClassDefinition2UMLService: ~
+    UMLGenerationBundle\Service\ClassDefinition2UMLService: ~

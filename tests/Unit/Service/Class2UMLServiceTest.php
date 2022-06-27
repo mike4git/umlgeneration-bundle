@@ -5,8 +5,12 @@ namespace UMLGenerationBundle\Tests\Unit\Service;
 
 use const false;
 use PHPUnit\Framework\TestCase;
+use const true;
+use UMLGenerationBundle\Handler\Relation\ManyToManyRelationHandler;
+use UMLGenerationBundle\Handler\Relation\ManyToOneRelationHandler;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
+use UMLGenerationBundle\Model\Relation;
 use UMLGenerationBundle\Service\Class2UMLService;
 
 class Class2UMLServiceTest extends TestCase
@@ -15,7 +19,12 @@ class Class2UMLServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new Class2UMLService();
+        $this->service = new Class2UMLService(
+            [
+                new ManyToOneRelationHandler(),
+                new ManyToManyRelationHandler(),
+            ],
+        );
     }
 
     /**
@@ -41,7 +50,7 @@ class Class2UMLServiceTest extends TestCase
         yield <<<DECL
             /** @var string[] */
             private array arrayAttribute
-            DECL => [
+            DECL=> [
             5, 'arrayAttribute', 'string[]', 'private', false,
         ];
         yield 'private array $arrayWithoutDocAttribute;' => [
@@ -56,7 +65,7 @@ class Class2UMLServiceTest extends TestCase
      * @test
      * @dataProvider sampleAttributes
      */
-    public function generateClassBoxForSimpleClass(int $attributeIndex, string $name, string $type, string $modifier, bool $static): void
+    public function generateClassBoxForClass(int $attributeIndex, string $name, string $type, string $modifier, bool $static): void
     {
         $this->service->generateClassBox(TestClass::class);
 
@@ -65,7 +74,7 @@ class Class2UMLServiceTest extends TestCase
         $expected->setClassId('UMLGenerationBundle\Tests\Unit\Service\TestClass');
         $expected->setStereotype('');
 
-        $actualClassBox = $this->service->getClasses()[0];
+        $actualClassBox = array_values($this->service->getClasses())[0];
         self::assertEquals($expected->getClassName(), $actualClassBox->getClassName());
         self::assertEquals($expected->getClassId(), $actualClassBox->getClassId());
         self::assertEquals($expected->getStereotype(), $actualClassBox->getStereotype());
@@ -79,19 +88,81 @@ class Class2UMLServiceTest extends TestCase
         );
     }
 
-    /**
-     * @param $name
-     * @param $type
-     * @param $modifier
-     * @param $static
-     */
-    private function createExpectedAttribute(string $name, string $type, string $modifier, bool $static): Attribute
+    public function sampleRelations()
     {
+        yield 'Many to one aggregation' => [
+            0, 'TestClassForRelations', 'TestClass', 'parent', false, true, 1, 1,
+        ];
+        yield 'nullable Many to one aggregation' => [
+            1, 'TestClassForRelations', 'TestClass', 'nullableParent', false, true, 0, 1,
+        ];
+        yield 'Many to many aggregation' => [
+            2, 'TestClassForRelations', 'TestClass', 'children', false, true, 0, null,
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider sampleRelations
+     */
+    public function generateRelationsForClasses(
+        int $relationIndex,
+        string $sourceType,
+        string $targetType,
+        string $targetRolename,
+        bool $bidirectional,
+        bool $aggregation,
+        int $minimum,
+        ?int $maximum,
+    ): void {
+        $this->service->generateClassBox(TestClass::class);
+        $this->service->generateClassBox(TestClassForRelations::class);
+
+        $expected = $this->createExpectedRelation(
+            $sourceType,
+            $targetType,
+            $targetRolename,
+            $bidirectional,
+            $aggregation,
+            $minimum,
+            $maximum,
+        );
+
+        self::assertEquals(
+            $expected,
+            $this->service->getRelations()[$relationIndex],
+        );
+    }
+
+    private function createExpectedAttribute(
+        string $name,
+        string $type,
+        string $modifier,
+        bool $static,
+    ): Attribute {
         return (new Attribute())
             ->setName($name)
             ->setType($type)
             ->setModifier($modifier)
             ->setStatic($static);
+    }
+
+    private function createExpectedRelation(
+        string $sourceType,
+        string $targetType,
+        string $targetRolename,
+        bool $bidirectional,
+        bool $aggregation,
+        int $minimum,
+        ?int $maximum,
+    ): Relation {
+        return (new Relation())->setSourceType($sourceType)
+            ->setTargetType($targetType)
+            ->setBidirectional($bidirectional)
+            ->setTargetRolename($targetRolename)
+            ->setAggregation($aggregation)
+            ->setMinimum($minimum)
+            ->setMaximum($maximum);
     }
 }
 
@@ -111,7 +182,6 @@ class TestClass
 class TestClassForRelations
 {
     private TestClass $parent;
-
     private ?TestClass $nullableParent;
 
     /** @var TestClass[] */
