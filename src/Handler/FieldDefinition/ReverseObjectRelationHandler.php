@@ -15,15 +15,27 @@ class ReverseObjectRelationHandler implements FieldDefinitionHandlerInterface
         return $fieldDefinition instanceof Data\ReverseObjectRelation;
     }
 
+    /**
+     * @param Data\ReverseObjectRelation $fieldDefinition
+     * @param Relation[] $relations
+     */
     public function handle(ClassDefinition $classDefinition, Data $fieldDefinition, array &$relations): void
     {
-        $relation = (new Relation())
-            ->setSourceType($fieldDefinition->getOwnerClassName())
-            ->setSourceRolename($fieldDefinition->getOwnerFieldName())
-            ->setTargetType($classDefinition->getName());
+        if ($classDefinition->getName() !== null && $fieldDefinition->getOwnerClassName() !== null) {
+            $relation = (new Relation())
+                ->setSourceType($fieldDefinition->getOwnerClassName())
+                ->setSourceRolename($fieldDefinition->getOwnerFieldName())
+                ->setTargetType($classDefinition->getName());
 
-        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
+            $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
 
-        $relations[$relationsKey] = $relation;
+            // if relation exists already merge it otherwise
+            if (\array_key_exists($relationsKey, $relations)) {
+                $relationToMerge = $relations[$relationsKey];
+                $relationToMerge->setBidirectional(true);
+            } else {
+                $relations[$relationsKey] = $relation;
+            }
+        }
     }
 }

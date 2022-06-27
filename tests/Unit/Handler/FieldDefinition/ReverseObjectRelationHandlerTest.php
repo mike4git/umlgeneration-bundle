@@ -74,16 +74,37 @@ class ReverseObjectRelationHandlerTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function handleShouldMergeExistingRelation(): void
+    {
+        /** @var ReverseObjectRelation|ObjectProphecy $fieldDefinition */
+        $fieldDefinition = $this->prophesize(ReverseObjectRelation::class);
+        $fieldDefinition->getOwnerClassName()->willReturn('TargetType');
+        $fieldDefinition->getOwnerFieldName()->willReturn('targetField');
+
+        $classDefinition = $this->prophesize(ClassDefinition::class);
+        $classDefinition->getName()->willReturn('SourceType');
+
+        $relation = new Relation();
+        $relations['TargetType.targetField - SourceType'] = $relation;
+
+        $this->handler->handle($classDefinition->reveal(), $fieldDefinition->reveal(), $relations);
+
+        self::assertCount(1, $relations);
+        self::assertTrue($relation->isBidirectional());
+    }
+
     private function assertRelations(
         Relation $relation,
-        string   $relationSourceType,
-        string   $relationTargetType,
-        ?string  $relationSourceRolename,
-        ?string  $relationTargetRolename,
-        int      $relationMinimum,
-        ?int     $relationMaximum,
-    ): void
-    {
+        string $relationSourceType,
+        string $relationTargetType,
+        ?string $relationSourceRolename,
+        ?string $relationTargetRolename,
+        int $relationMinimum,
+        ?int $relationMaximum,
+    ): void {
         self::assertEquals($relationSourceType, $relation->getSourceType());
         self::assertEquals($relationTargetType, $relation->getTargetType());
         self::assertEquals($relationSourceRolename, $relation->getSourceRolename());
