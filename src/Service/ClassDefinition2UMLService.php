@@ -5,6 +5,8 @@ namespace UMLGenerationBundle\Service;
 
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Localizedfields;
+use UMLGenerationBundle\Handler\Relation\FieldDefinitionHandlerInterface;
+use UMLGenerationBundle\Handler\Relation\PropertyRelationHandlerInterface;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
@@ -17,6 +19,9 @@ class ClassDefinition2UMLService
 
     /** @var ObjectClass[] */
     private array $classes;
+
+    /** @var FieldDefinitionHandlerInterface[] */
+    private array $fieldDefinitionHandler;
 
     public function __construct()
     {
@@ -65,6 +70,12 @@ class ClassDefinition2UMLService
     public function generateRelations(ClassDefinition $classDefinition): void
     {
         foreach ($classDefinition->getFieldDefinitions() as $fieldDefinition) {
+            foreach ($this->fieldDefinitionHandler as $handler) {
+                if ($handler->canHandle($fieldDefinition)) {
+                    $handler->handle($fieldDefinition, $this->relations);
+                    break;
+                }
+            }
             if ($fieldDefinition->isRelationType()) {
                 $relation = new Relation();
                 $relation->setAggregation(true);
