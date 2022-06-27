@@ -8,6 +8,8 @@ use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Localizedfields;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use UMLGenerationBundle\Handler\FieldDefinition\ManyToManyRelationHandler;
+use UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
@@ -24,7 +26,13 @@ class ClassDefinition2UMLServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new ClassDefinition2UMLService();
+        $this->service = new ClassDefinition2UMLService(
+            [
+                new ManyToManyRelationHandler(),
+                new ManyToManyRelationHandler(),
+                new ReverseObjectRelationHandler(),
+            ],
+        );
 
         $this->classDefinition = $this->prophesize(ClassDefinition::class);
         $this->classDefinition->getName()->willReturn('MyType');

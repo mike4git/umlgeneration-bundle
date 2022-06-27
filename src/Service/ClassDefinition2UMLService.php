@@ -20,13 +20,17 @@ class ClassDefinition2UMLService
     private array $classes;
 
     /** @var FieldDefinitionHandlerInterface[] */
-    private array $fieldDefinitionHandler;
+    private array $fieldDefinitionHandlers;
 
-    public function __construct()
-    {
-        $this->fieldDefinitionHandler = [];
+    /**
+     * @param FieldDefinitionHandlerInterface[] $fieldDefinitionHandlers
+     */
+    public function __construct(
+        array $fieldDefinitionHandlers,
+    ) {
         $this->relations = [];
         $this->classes = [];
+        $this->fieldDefinitionHandlers = $fieldDefinitionHandlers;
     }
 
     public function generateClassBox(ClassDefinition $classDefinition): void
@@ -70,27 +74,10 @@ class ClassDefinition2UMLService
     public function generateRelations(ClassDefinition $classDefinition): void
     {
         foreach ($classDefinition->getFieldDefinitions() as $fieldDefinition) {
-            foreach ($this->fieldDefinitionHandler as $handler) {
+            foreach ($this->fieldDefinitionHandlers as $handler) {
                 if ($handler->canHandle($fieldDefinition)) {
-                    $handler->handle($fieldDefinition, $this->relations);
+                    $handler->handle($classDefinition, $fieldDefinition, $this->relations);
                     break;
-                }
-            }
-            if ($fieldDefinition->isRelationType()) {
-                $relation = new Relation();
-                $relation->setAggregation(true);
-
-                if ($this->isManyToOneObjectRelation($fieldDefinition)) {
-                    $relation->setMaximum(1);
-                    $this->addRelation($fieldDefinition, $relation, $classDefinition);
-                } elseif ($this->isNonReverseManyToManyObjectRelation($fieldDefinition)
-                ) {
-                    /** @var ClassDefinition\Data\ManyToManyRelation|ClassDefinition\Data\ManyToManyObjectRelation $manyToManyRelation */
-                    $manyToManyRelation = $fieldDefinition;
-                    if ($manyToManyRelation->getMaxItems() > 0) {
-                        $relation->setMaximum($manyToManyRelation->getMaxItems());
-                    }
-                    $this->addRelation($manyToManyRelation, $relation, $classDefinition);
                 }
             }
         }
@@ -110,38 +97,5 @@ class ClassDefinition2UMLService
     public function getClasses(): array
     {
         return $this->classes;
-    }
-
-    private function addRelation(mixed $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
-    {
-        // TODO Check cases where $fieldDefinition->getClasses() has more than one item
-        /** @var string $class */
-        $class = $fieldDefinition->getClasses()[0]['classes'];
-        $relation->setSourceType($classDefinition->getName() ?? self::UNKNOWN)
-            ->setTargetType($class)
-            ->setSourceRolename($fieldDefinition->getTitle())
-            ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
-
-        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
-
-        // if relation already exists it must be bidirectional
-        if (\array_key_exists($relationsKey, $this->relations)) {
-            $relation->setBidirectional(true);
-        }
-        $this->relations[$relationsKey] = $relation;
-    }
-
-    private function isManyToOneObjectRelation(ClassDefinition\Data $fieldDefinition): bool
-    {
-        return $fieldDefinition instanceof ClassDefinition\Data\ManyToOneRelation
-            && $fieldDefinition->getObjectsAllowed();
-    }
-
-    private function isNonReverseManyToManyObjectRelation(ClassDefinition\Data $fieldDefinition): bool
-    {
-        return ($fieldDefinition instanceof ClassDefinition\Data\ManyToManyRelation ||
-                $fieldDefinition instanceof ClassDefinition\Data\ManyToManyObjectRelation)
-            && !($fieldDefinition instanceof ClassDefinition\Data\ReverseObjectRelation)
-            && $fieldDefinition->getObjectsAllowed();
     }
 }

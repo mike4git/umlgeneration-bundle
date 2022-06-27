@@ -27,4 +27,9 @@ services:
 
     UMLGenerationBundle\Service\PrinterService: ~
 
-    UMLGenerationBundle\Service\ClassDefinition2UMLService: ~
+    UMLGenerationBundle\Service\ClassDefinition2UMLService:
+        arguments:
+            $fieldDefinitionHandlers:
+                - '@UMLGenerationBundle\Handler\FieldDefinition\ManyToOneRelationHandler'
+                - '@UMLGenerationBundle\Handler\FieldDefinition\ManyToManyRelationHandler'
+                - '@UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler'
