@@ -8,7 +8,7 @@ class Attribute
     private string $modifier;
     private string $type;
     private string $name;
-    private bool $static;
+    private bool $static = false;
     private string $defaultValue = '';
 
     private ?string $additionalInfo = null;
