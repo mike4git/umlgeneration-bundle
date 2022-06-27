@@ -136,7 +136,8 @@ class ClassDefinition2UMLService
 
     private function addReverseRelation(ClassDefinition\Data\ReverseObjectRelation $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
     {
-        $relation->setSourceType($fieldDefinition->getOwnerClassName() ?? self::UNKNOWN)
+        $relation
+            ->setSourceType($fieldDefinition->getOwnerClassName() ?? self::UNKNOWN)
             ->setSourceRolename($fieldDefinition->getOwnerFieldName())
             ->setTargetType($classDefinition->getName() ?? self::UNKNOWN);
 
