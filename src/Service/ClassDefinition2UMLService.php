@@ -5,15 +5,14 @@ namespace UMLGenerationBundle\Service;
 
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Localizedfields;
-use UMLGenerationBundle\Handler\Relation\FieldDefinitionHandlerInterface;
-use UMLGenerationBundle\Handler\Relation\PropertyRelationHandlerInterface;
+use UMLGenerationBundle\Handler\FieldDefinition\FieldDefinitionHandlerInterface;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
 
 class ClassDefinition2UMLService
 {
-    private const UNKNOWN = 'unknown';
+    public const UNKNOWN = 'unknown';
     /** @var Relation[] */
     private array $relations;
 
@@ -81,9 +80,7 @@ class ClassDefinition2UMLService
                 $relation = new Relation();
                 $relation->setAggregation(true);
 
-                if ($fieldDefinition instanceof ClassDefinition\Data\ReverseObjectRelation) {
-                    $this->addReverseRelation($fieldDefinition, $relation, $classDefinition);
-                } elseif ($this->isManyToOneObjectRelation($fieldDefinition)) {
+                if ($this->isManyToOneObjectRelation($fieldDefinition)) {
                     $relation->setMaximum(1);
                     $this->addRelation($fieldDefinition, $relation, $classDefinition);
                 } elseif ($this->isNonReverseManyToManyObjectRelation($fieldDefinition)
@@ -132,25 +129,6 @@ class ClassDefinition2UMLService
             $relation->setBidirectional(true);
         }
         $this->relations[$relationsKey] = $relation;
-    }
-
-    private function addReverseRelation(ClassDefinition\Data\ReverseObjectRelation $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
-    {
-        $relation
-            ->setSourceType($fieldDefinition->getOwnerClassName() ?? self::UNKNOWN)
-            ->setSourceRolename($fieldDefinition->getOwnerFieldName())
-            ->setTargetType($classDefinition->getName() ?? self::UNKNOWN);
-
-        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
-
-        // if relation exists already merge it otherwise
-        if (\array_key_exists($relationsKey, $this->relations)) {
-            $relationToMerge = $this->relations[$relationsKey];
-            $relationToMerge->setBidirectional(true);
-        } else {
-            // add new relation
-            $this->relations[$relationsKey] = $relation;
-        }
     }
 
     private function isManyToOneObjectRelation(ClassDefinition\Data $fieldDefinition): bool

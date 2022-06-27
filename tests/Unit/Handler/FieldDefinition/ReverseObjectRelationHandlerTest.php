@@ -12,6 +12,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler;
 use UMLGenerationBundle\Model\Relation;
+use UMLGenerationBundle\Tests\Unit\Handler\AssertionHelper;
 
 class ReverseObjectRelationHandlerTest extends TestCase
 {
@@ -63,7 +64,8 @@ class ReverseObjectRelationHandlerTest extends TestCase
         self::assertCount(1, $relations);
         self::assertInstanceOf(Relation::class, $relations['TargetType.targetField - SourceType']);
 
-        $this->assertRelations(
+        AssertionHelper::assertRelations(
+            $this,
             $relations['TargetType.targetField - SourceType'],
             'TargetType',
             'SourceType',
@@ -94,22 +96,5 @@ class ReverseObjectRelationHandlerTest extends TestCase
 
         self::assertCount(1, $relations);
         self::assertTrue($relation->isBidirectional());
-    }
-
-    private function assertRelations(
-        Relation $relation,
-        string $relationSourceType,
-        string $relationTargetType,
-        ?string $relationSourceRolename,
-        ?string $relationTargetRolename,
-        int $relationMinimum,
-        ?int $relationMaximum,
-    ): void {
-        self::assertEquals($relationSourceType, $relation->getSourceType());
-        self::assertEquals($relationTargetType, $relation->getTargetType());
-        self::assertEquals($relationSourceRolename, $relation->getSourceRolename());
-        self::assertEquals($relationTargetRolename, $relation->getTargetRolename());
-        self::assertEquals($relationMinimum, $relation->getMinimum());
-        self::assertEquals($relationMaximum, $relation->getMaximum());
     }
 }
