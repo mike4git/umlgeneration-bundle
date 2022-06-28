@@ -29,7 +29,7 @@ class Class2UMLService
      * @param PropertyRelationHandlerInterface[] $propertyRelationsHandler
      */
     public function __construct(
-        private array $propertyRelationsHandler,
+        private array $propertyRelationsHandler
     ) {
     }
 
