@@ -13,7 +13,8 @@ class ManyToManyRelationHandler implements FieldDefinitionHandlerInterface
         return ($fieldDefinition instanceof ClassDefinition\Data\ManyToManyRelation ||
                 $fieldDefinition instanceof ClassDefinition\Data\ManyToManyObjectRelation)
             && !($fieldDefinition instanceof ClassDefinition\Data\ReverseObjectRelation)
-            && $fieldDefinition->getObjectsAllowed();
+            && $fieldDefinition->getObjectsAllowed()
+            && !empty($fieldDefinition->getClasses());
     }
 
     /**
@@ -28,21 +29,22 @@ class ManyToManyRelationHandler implements FieldDefinitionHandlerInterface
             if ($fieldDefinition->getMaxItems() > 0) {
                 $relation->setMaximum($fieldDefinition->getMaxItems());
             }
-            // TODO Check cases where $fieldDefinition->getClasses() has more than one item
-            /** @var string $class */
-            $class = $fieldDefinition->getClasses()[0]['classes'];
-            $relation->setSourceType($classDefinition->getName())
-                ->setTargetType($class)
-                ->setSourceRolename($fieldDefinition->getTitle())
-                ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
 
-            $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
+            foreach ($fieldDefinition->getClasses() as $objectClassArray) {
+                $class = $objectClassArray['classes'];
+                $relation->setSourceType($classDefinition->getName())
+                    ->setTargetType($class)
+                    ->setSourceRolename($fieldDefinition->getTitle())
+                    ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
 
-            // if relation already exists it must be bidirectional
-            if (\array_key_exists($relationsKey, $relations)) {
-                $relation->setBidirectional(true);
+                $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
+
+                // if relation already exists it must be bidirectional
+                if (\array_key_exists($relationsKey, $relations)) {
+                    $relation->setBidirectional(true);
+                }
+                $relations[$relationsKey] = $relation;
             }
-            $relations[$relationsKey] = $relation;
         }
     }
 }

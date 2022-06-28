@@ -21,21 +21,22 @@ class ManyToOneRelationHandler implements FieldDefinitionHandlerInterface
      */
     public function handle(ClassDefinition $classDefinition, Data $fieldDefinition, array &$relations): void
     {
-        $relation = new Relation();
-        $relation->setMaximum(1);
-        /** @var string $class */
-        $class = $fieldDefinition->getClasses()[0]['classes'];
-        $relation->setSourceType($classDefinition->getName() ?? ClassDefinition2UMLService::UNKNOWN)
-            ->setTargetType($class)
-            ->setSourceRolename($fieldDefinition->getTitle())
-            ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
+        foreach ($fieldDefinition->getClasses() as $objectClassArray) {
+            $relation = new Relation();
+            $relation->setMaximum(1);
+            $class = $objectClassArray['classes'];
+            $relation->setSourceType($classDefinition->getName() ?? ClassDefinition2UMLService::UNKNOWN)
+                ->setTargetType($class)
+                ->setSourceRolename($fieldDefinition->getTitle())
+                ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
 
-        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
+            $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
 
-        // if relation already exists it must be bidirectional
-        if (\array_key_exists($relationsKey, $relations)) {
-            $relation->setBidirectional(true);
+            // if relation already exists it must be bidirectional
+            if (\array_key_exists($relationsKey, $relations)) {
+                $relation->setBidirectional(true);
+            }
+            $relations[$relationsKey] = $relation;
         }
-        $relations[$relationsKey] = $relation;
     }
 }

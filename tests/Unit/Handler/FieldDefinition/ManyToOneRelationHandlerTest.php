@@ -79,4 +79,61 @@ class ManyToOneRelationHandlerTest extends TestCase
             1,
         );
     }
+
+    public function testHandleMultipleAllowedTypes(): void
+    {
+        /** @var ManyToOneRelation|ObjectProphecy $fieldDefinition */
+        $fieldDefinition = $this->prophesize(ManyToOneRelation::class);
+        $fieldDefinition->getClasses()->willReturn(
+            [
+                ['classes' => 'TargetType1'],
+                ['classes' => 'TargetType2'],
+                ['classes' => 'TargetType3'],
+            ],
+        );
+        $fieldDefinition->getName()->willReturn('my Targets');
+        $fieldDefinition->getTitle()->willReturn('sourceRole');
+        $fieldDefinition->getMandatory()->willReturn(true);
+
+        /** @var ClassDefinition|ObjectProphecy $classDefinition */
+        $classDefinition = $this->prophesize(ClassDefinition::class);
+        $classDefinition->getName()->willReturn('SourceType');
+
+        /** @var Relation[] $relations */
+        $relations = [];
+
+        $this->handler->handle($classDefinition->reveal(), $fieldDefinition->reveal(), $relations);
+
+        self::assertCount(3, $relations);
+        AssertionHelper::assertRelations(
+            $this,
+            $relations['SourceType.my Targets - TargetType1'],
+            'SourceType',
+            'TargetType1',
+            'sourceRole',
+            null,
+            1,
+            1,
+        );
+        AssertionHelper::assertRelations(
+            $this,
+            $relations['SourceType.my Targets - TargetType2'],
+            'SourceType',
+            'TargetType2',
+            'sourceRole',
+            null,
+            1,
+            1,
+        );
+        AssertionHelper::assertRelations(
+            $this,
+            $relations['SourceType.my Targets - TargetType3'],
+            'SourceType',
+            'TargetType3',
+            'sourceRole',
+            null,
+            1,
+            1,
+        );
+    }
 }

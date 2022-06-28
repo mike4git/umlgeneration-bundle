@@ -31,6 +31,11 @@ class ManyToManyRelationHandlerTest extends TestCase
         /** @var ManyToManyRelation|ObjectProphecy $fieldDefinition */
         $fieldDefinition = $this->prophesize(ManyToManyRelation::class);
         $fieldDefinition->getObjectsAllowed()->willReturn(true);
+        $fieldDefinition->getClasses()->willReturn([
+            [
+                'classes' => 'AnySpecifiedTargetType',
+            ],
+        ]);
 
         self::assertTrue($this->handler->canHandle($fieldDefinition->reveal()));
     }
@@ -43,8 +48,26 @@ class ManyToManyRelationHandlerTest extends TestCase
         /** @var Data\ManyToManyObjectRelation|ObjectProphecy $fieldDefinition */
         $fieldDefinition = $this->prophesize(Data\ManyToManyObjectRelation::class);
         $fieldDefinition->getObjectsAllowed()->willReturn(true);
+        $fieldDefinition->getClasses()->willReturn([
+            [
+                'classes' => 'AnySpecifiedTargetType',
+            ],
+        ]);
 
         self::assertTrue($this->handler->canHandle($fieldDefinition->reveal()));
+    }
+
+    /**
+     * @test
+     */
+    public function canHandleShouldReturnFalseOnNotTypedManyToManyObjectRelation(): void
+    {
+        /** @var Data\ManyToManyObjectRelation|ObjectProphecy $fieldDefinition */
+        $fieldDefinition = $this->prophesize(Data\ManyToManyObjectRelation::class);
+        $fieldDefinition->getObjectsAllowed()->willReturn(true);
+        $fieldDefinition->getClasses()->willReturn([]);
+
+        self::assertFalse($this->handler->canHandle($fieldDefinition->reveal()));
     }
 
     /**
