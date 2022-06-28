@@ -23,7 +23,7 @@ class UMLGenerationCommand extends AbstractCommand
         ClassDefinitionsRepositoryInterface $classDefinitionsRepository,
         ClassDefinition2UMLService $classDefinition2UMLService,
         PrinterService $printerService,
-        string $name = null,
+        string $name = null
     ) {
         $this->printerService = $printerService;
         $this->classDefinition2UMLService = $classDefinition2UMLService;

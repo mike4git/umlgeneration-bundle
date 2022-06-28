@@ -77,7 +77,8 @@ return (new PhpCsFixer\Config())
         'phpdoc_var_without_name'                       => true,
         'return_assignment'                             => true,
         'strict_param'                                  => true,
-        'declare_strict_types'                          => false, // Todo: enable this!!
-        'trailing_comma_in_multiline'                   => ['after_heredoc' => true, 'elements' => ['arrays', 'arguments', 'parameters']],
+        'declare_strict_types'                          => true,
+        // the following line has been removed for PHP 7.4 compatibilty reason
+        // 'trailing_comma_in_multiline'                   => ['after_heredoc' => true, 'elements' => ['arrays', 'arguments', 'parameters']],
         'native_function_invocation'                    => ['scope' => 'namespaced'],
     ]);
