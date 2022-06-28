@@ -12,7 +12,7 @@ class ClassFormatter
     private AttributeFormatter $attributeFormatter;
 
     public function __construct(
-        AttributeFormatter $attributeFormatter
+        AttributeFormatter $attributeFormatter,
     ) {
         $this->attributeFormatter = $attributeFormatter;
     }

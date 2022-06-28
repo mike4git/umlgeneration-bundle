@@ -29,6 +29,8 @@ services:
 
     UMLGenerationBundle\Handler\FieldDefinition\ManyToOneRelationHandler: ~
     UMLGenerationBundle\Handler\FieldDefinition\ManyToManyRelationHandler: ~
+    UMLGenerationBundle\Handler\FieldDefinition\ManyToOneGenericRelationHandler: ~
+    UMLGenerationBundle\Handler\FieldDefinition\ManyToManyGenericRelationHandler: ~
     UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler: ~
 
     UMLGenerationBundle\Service\ClassDefinition2UMLService:
@@ -37,3 +39,5 @@ services:
                 - '@UMLGenerationBundle\Handler\FieldDefinition\ManyToOneRelationHandler'
                 - '@UMLGenerationBundle\Handler\FieldDefinition\ManyToManyRelationHandler'
                 - '@UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler'
+                - '@UMLGenerationBundle\Handler\FieldDefinition\ManyToOneGenericRelationHandler'
+                - '@UMLGenerationBundle\Handler\FieldDefinition\ManyToManyGenericRelationHandler'

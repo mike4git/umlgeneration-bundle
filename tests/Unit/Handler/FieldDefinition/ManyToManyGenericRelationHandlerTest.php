@@ -10,7 +10,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\FieldDefinition\ManyToManyGenericRelationHandler;
 use UMLGenerationBundle\Model\Relation;
-use UMLGenerationBundle\Tests\Unit\Handler\AssertionHelper;
+use UMLGenerationBundle\Tests\Unit\Helper\AssertionHelper;
 
 class ManyToManyGenericRelationHandlerTest extends TestCase
 {
@@ -96,7 +96,7 @@ class ManyToManyGenericRelationHandlerTest extends TestCase
         $this->handler->handle($classDefinition->reveal(), $fieldDefinition->reveal(), $relations);
 
         self::assertCount(1, $relations);
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['SourceType.my Targets - Pimcore\Model\DataObject'],
             'SourceType',

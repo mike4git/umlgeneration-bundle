@@ -10,10 +10,8 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\FieldDefinition\ManyToManyRelationHandler;
 use UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler;
-use UMLGenerationBundle\Model\Attribute;
-use UMLGenerationBundle\Model\ObjectClass;
-use UMLGenerationBundle\Model\Relation;
 use UMLGenerationBundle\Service\ClassDefinition2UMLService;
+use UMLGenerationBundle\Tests\Unit\Helper\AssertionHelper;
 
 class ClassDefinition2UMLServiceTest extends TestCase
 {
@@ -49,7 +47,7 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $this->service->generateClassBox($this->classDefinition->reveal());
 
         $classes = $this->service->getClasses();
-        $this->assertClasses($classes, ['MyType'], ['type_id'], ['DataObject'], [0]);
+        AssertionHelper::assertClasses($this, $classes, ['MyType'], ['type_id'], ['DataObject'], [0]);
     }
 
     /**
@@ -68,7 +66,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $this->service->generateClassBox($this->classDefinition->reveal());
 
         $objectClasses = $this->service->getClasses();
-        $this->assertClasses(
+        AssertionHelper::assertClasses(
+            $this,
             $objectClasses,
             ['MyType'],
             ['type_id'],
@@ -76,7 +75,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
             [2],
         );
 
-        $this->assertAttributes(
+        AssertionHelper::assertAttributes(
+            $this,
             $objectClasses[0]->getAttributes(),
             ['field1', 'field2'],
             ['string|null', 'int|null'],
@@ -109,7 +109,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $this->service->generateClassBox($this->classDefinition->reveal());
 
         $objectClasses = $this->service->getClasses();
-        $this->assertClasses(
+        AssertionHelper::assertClasses(
+            $this,
             $objectClasses,
             ['MyType'],
             ['type_id'],
@@ -117,7 +118,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
             [1],
         );
 
-        $this->assertAttributes(
+        AssertionHelper::assertAttributes(
+            $this,
             $objectClasses[0]->getAttributes(),
             ['field1'],
             ['\Pimcore\Model\DataObject\TargetType|null'],
@@ -126,7 +128,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
         );
 
         $this->service->generateRelations($this->classDefinition->reveal());
-        $this->assertRelations(
+        AssertionHelper::assertRelations(
+            $this,
             $this->service->getRelations(),
             ['MyType'],
             ['TargetType'],
@@ -176,7 +179,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $this->service->generateClassBox($this->classDefinition->reveal());
 
         $objectClasses = $this->service->getClasses();
-        $this->assertClasses(
+        AssertionHelper::assertClasses(
+            $this,
             $objectClasses,
             ['MyType'],
             ['type_id'],
@@ -184,7 +188,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
             [1],
         );
 
-        $this->assertAttributes(
+        AssertionHelper::assertAttributes(
+            $this,
             $objectClasses[0]->getAttributes(),
             ['field1'],
             ['\Pimcore\Model\DataObject\TargetType[]'],
@@ -193,14 +198,15 @@ class ClassDefinition2UMLServiceTest extends TestCase
         );
 
         $this->service->generateRelations($this->classDefinition->reveal());
-        $this->assertRelations(
+        AssertionHelper::assertRelations(
+            $this,
             $this->service->getRelations(),
             ['MyType'],
             ['TargetType'],
             ['the Others'],
             [''],
-            [$mandatory ? '1' : '0'],
-            [(string) $maxItems],
+            [$mandatory ? 1 : 0],
+            [$maxItems],
         );
     }
 
@@ -221,7 +227,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $this->service->generateClassBox($this->classDefinition->reveal());
 
         $objectClasses = $this->service->getClasses();
-        $this->assertClasses(
+        AssertionHelper::assertClasses(
+            $this,
             $objectClasses,
             ['MyType'],
             ['type_id'],
@@ -229,7 +236,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
             [2],
         );
 
-        $this->assertAttributes(
+        AssertionHelper::assertAttributes(
+            $this,
             $objectClasses[0]->getAttributes(),
             ['Field 1', 'Field 2'],
             ['string|null', 'int|null'],
@@ -245,77 +253,5 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $fieldDefinition->getPhpdocReturnType()->willReturn($type);
 
         return $fieldDefinition;
-    }
-
-    /**
-     * @param ObjectClass[] $classes
-     * @param array<string> $classNames
-     * @param array<string> $classIds
-     * @param array<string> $stereoTypes
-     * @param array<int> $numbersOfAttributes
-     */
-    private function assertClasses(
-        array $classes,
-        array $classNames,
-        array $classIds,
-        array $stereoTypes,
-        array $numbersOfAttributes,
-    ): void {
-        foreach ($classes as $key => $classDefinition) {
-            self::assertEquals($classNames[$key], $classDefinition->getClassName());
-            self::assertEquals($classIds[$key], $classDefinition->getClassId());
-            self::assertEquals($stereoTypes[$key], $classDefinition->getStereotype());
-            self::assertCount($numbersOfAttributes[$key], $classDefinition->getAttributes());
-        }
-    }
-
-    /**
-     * @param Attribute[] $attributes
-     * @param array<string> $attributeNames
-     * @param array<string> $attributeTypes
-     * @param array<string> $attributeModifiers
-     * @param array<string> $attributeAdditionalInfos
-     */
-    private function assertAttributes(
-        array $attributes,
-        array $attributeNames,
-        array $attributeTypes,
-        array $attributeModifiers,
-        array $attributeAdditionalInfos,
-    ): void {
-        foreach ($attributes as $key => $attribute) {
-            self::assertEquals($attributeNames[$key], $attribute->getName());
-            self::assertEquals($attributeTypes[$key], $attribute->getType());
-            self::assertEquals($attributeModifiers[$key], $attribute->getModifier());
-            self::assertEquals($attributeAdditionalInfos[$key], $attribute->getAdditionalInfo());
-        }
-    }
-
-    /**
-     * @param Relation[] $relations
-     * @param array<string> $relationSourceTypes
-     * @param array<string> $relationTargetTypes
-     * @param array<string> $relationSourceRolenames
-     * @param array<string> $relationTargetRolenames
-     * @param array<?string> $relationMinimums
-     * @param array<?string> $relationMaximums
-     */
-    private function assertRelations(
-        array $relations,
-        array $relationSourceTypes,
-        array $relationTargetTypes,
-        array $relationSourceRolenames,
-        array $relationTargetRolenames,
-        array $relationMinimums,
-        array $relationMaximums,
-    ): void {
-        foreach (array_values($relations) as $key => $relation) {
-            self::assertEquals($relationSourceTypes[$key], $relation->getSourceType());
-            self::assertEquals($relationTargetTypes[$key], $relation->getTargetType());
-            self::assertEquals($relationSourceRolenames[$key], $relation->getSourceRolename());
-            self::assertEquals($relationTargetRolenames[$key], $relation->getTargetRolename());
-            self::assertEquals($relationMinimums[$key], $relation->getMinimum());
-            self::assertEquals($relationMaximums[$key], $relation->getMaximum());
-        }
     }
 }

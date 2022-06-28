@@ -12,7 +12,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\FieldDefinition\ReverseObjectRelationHandler;
 use UMLGenerationBundle\Model\Relation;
-use UMLGenerationBundle\Tests\Unit\Handler\AssertionHelper;
+use UMLGenerationBundle\Tests\Unit\Helper\AssertionHelper;
 
 class ReverseObjectRelationHandlerTest extends TestCase
 {
@@ -64,7 +64,7 @@ class ReverseObjectRelationHandlerTest extends TestCase
         self::assertCount(1, $relations);
         self::assertInstanceOf(Relation::class, $relations['TargetType.targetField - SourceType']);
 
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['TargetType.targetField - SourceType'],
             'TargetType',

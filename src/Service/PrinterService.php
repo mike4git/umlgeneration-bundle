@@ -15,7 +15,7 @@ class PrinterService
 
     public function __construct(
         ClassFormatter $classFormatter,
-        RelationsFormatter $relationsFormatter
+        RelationsFormatter $relationsFormatter,
     ) {
         $this->relationsFormatter = $relationsFormatter;
         $this->classFormatter = $classFormatter;

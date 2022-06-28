@@ -10,7 +10,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\FieldDefinition\ManyToManyRelationHandler;
 use UMLGenerationBundle\Model\Relation;
-use UMLGenerationBundle\Tests\Unit\Handler\AssertionHelper;
+use UMLGenerationBundle\Tests\Unit\Helper\AssertionHelper;
 
 class ManyToManyRelationHandlerTest extends TestCase
 {
@@ -104,7 +104,7 @@ class ManyToManyRelationHandlerTest extends TestCase
         $this->handler->handle($classDefinition->reveal(), $fieldDefinition->reveal(), $relations);
 
         self::assertCount(1, $relations);
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['SourceType.my Targets - TargetType'],
             'SourceType',

@@ -26,7 +26,7 @@ class ClassDefinition2UMLService
      * @param FieldDefinitionHandlerInterface[] $fieldDefinitionHandlers
      */
     public function __construct(
-        array $fieldDefinitionHandlers
+        array $fieldDefinitionHandlers,
     ) {
         $this->relations = [];
         $this->classes = [];

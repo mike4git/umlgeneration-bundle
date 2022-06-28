@@ -10,7 +10,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\FieldDefinition\ManyToOneRelationHandler;
 use UMLGenerationBundle\Model\Relation;
-use UMLGenerationBundle\Tests\Unit\Handler\AssertionHelper;
+use UMLGenerationBundle\Tests\Unit\Helper\AssertionHelper;
 
 class ManyToOneRelationHandlerTest extends TestCase
 {
@@ -68,7 +68,7 @@ class ManyToOneRelationHandlerTest extends TestCase
         $this->handler->handle($classDefinition->reveal(), $fieldDefinition->reveal(), $relations);
 
         self::assertCount(1, $relations);
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['SourceType.my Targets - TargetType'],
             'SourceType',
@@ -105,7 +105,7 @@ class ManyToOneRelationHandlerTest extends TestCase
         $this->handler->handle($classDefinition->reveal(), $fieldDefinition->reveal(), $relations);
 
         self::assertCount(3, $relations);
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['SourceType.my Targets - TargetType1'],
             'SourceType',
@@ -115,7 +115,7 @@ class ManyToOneRelationHandlerTest extends TestCase
             1,
             1,
         );
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['SourceType.my Targets - TargetType2'],
             'SourceType',
@@ -125,7 +125,7 @@ class ManyToOneRelationHandlerTest extends TestCase
             1,
             1,
         );
-        AssertionHelper::assertRelations(
+        AssertionHelper::assertRelation(
             $this,
             $relations['SourceType.my Targets - TargetType3'],
             'SourceType',
