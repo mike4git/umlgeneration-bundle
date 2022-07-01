@@ -6,6 +6,7 @@ namespace UMLGenerationBundle\Tests\Unit\Service;
 use const false;
 use PHPUnit\Framework\TestCase;
 use const true;
+use UMLGenerationBundle\Handler\Relation\ClassExtendsHandler;
 use UMLGenerationBundle\Handler\Relation\ManyToManyRelationHandler;
 use UMLGenerationBundle\Handler\Relation\ManyToOneRelationHandler;
 use UMLGenerationBundle\Model\Attribute;
@@ -24,6 +25,7 @@ class Class2UMLServiceTest extends TestCase
                 new ManyToOneRelationHandler(),
                 new ManyToManyRelationHandler(),
             ],
+            new ClassExtendsHandler(),
         );
     }
 
@@ -134,6 +136,29 @@ class Class2UMLServiceTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function testExtendsRelation(): void
+    {
+        $this->service->generateClassBox(SubTestClass::class);
+
+        $expectedClassBox = new ObjectClass();
+        $expectedClassBox->setClassName('SubTestClass')
+            ->setBaseClass('BaseTestClass')
+            ->setClassId('UMLGenerationBundle\Tests\Unit\Service\SubTestClass')
+            ->setStereotype('');
+
+        $expectedRelation = new Relation();
+        $expectedRelation->setSourceType('SubTestClass')
+            ->setTargetType('BaseTestClass')
+            ->setAggregation(false)
+            ->setBidirectional(true);
+
+        self::assertEquals($expectedClassBox, $this->service->getClasses()['UMLGenerationBundle\Tests\Unit\Service\SubTestClass']);
+        self::assertEquals($expectedRelation, $this->service->getRelations()[0]);
+    }
+
     private function createExpectedAttribute(
         string $name,
         string $type,
@@ -177,6 +202,14 @@ class TestClass
     private array $arrayAttribute;  // @phpstan-ignore-line
     private array $arrayWithoutDocAttribute;  // @phpstan-ignore-line
     private $attributeWithoutType;  // @phpstan-ignore-line
+}
+
+class SubTestClass extends BaseTestClass
+{
+}
+
+class BaseTestClass
+{
 }
 
 class TestClassForRelations

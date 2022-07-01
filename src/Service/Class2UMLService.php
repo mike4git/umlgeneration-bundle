@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace UMLGenerationBundle\Service;
 
 use phpDocumentor\Reflection\Types\ClassString;
-use PropertyRelationHandlerInterface;
+use UMLGenerationBundle\Handler\Relation\ClassExtendsHandler;
+use UMLGenerationBundle\Handler\Relation\PropertyRelationHandlerInterface;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
@@ -30,6 +31,7 @@ class Class2UMLService
      */
     public function __construct(
         private array $propertyRelationsHandler,
+        private ClassExtendsHandler $classExtendsHandler,
     ) {
     }
 
@@ -41,6 +43,10 @@ class Class2UMLService
         $classBox->setClassName($reflection->getShortName());
         $classBox->setClassId($reflection->getName());
         $classBox->setStereotype('');
+
+        if ($this->classExtendsHandler->canHandle($reflection)) {
+            $this->classExtendsHandler->handle($reflection, $this->relations);
+        }
 
         $properties = $reflection->getProperties(
             \ReflectionProperty::IS_PUBLIC

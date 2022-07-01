@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 use UMLGenerationBundle\Formatter\AttributeFormatter;
 use UMLGenerationBundle\Formatter\ClassFormatter;
 use UMLGenerationBundle\Formatter\RelationsFormatter;
+use UMLGenerationBundle\Handler\Relation\ClassExtendsHandler;
+use UMLGenerationBundle\Handler\Relation\ManyToManyRelationHandler;
+use UMLGenerationBundle\Handler\Relation\ManyToOneRelationHandler;
 use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
@@ -20,7 +23,13 @@ final class UMLGenerationTest extends TestCase
      */
     public function createDotFile(): void
     {
-        $class2UMLService = new Class2UMLService();
+        $class2UMLService = new Class2UMLService(
+            [
+                new ManyToOneRelationHandler(),
+                new ManyToManyRelationHandler(),
+            ],
+            new ClassExtendsHandler(),
+        );
 
         $class2UMLService->generateClassBox(ObjectClass::class);
         $class2UMLService->generateClassBox(Attribute::class);
@@ -33,7 +42,7 @@ final class UMLGenerationTest extends TestCase
 
         $print = $printerService->print($class2UMLService->getClasses(), []);
 
-        file_put_contents('michi.dot', $print);
+        file_put_contents(__DIR__ . '/../Data/result.dot', $print);
         self::assertNotEmpty($print);
     }
 }
