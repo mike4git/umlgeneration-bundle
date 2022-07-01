@@ -41,7 +41,4 @@
         <junit outputFile="reports/coverage.xml"/>
     </logging>
 
-    <extensions>
-        <extension class="UMLGenerationBundle\Tests\Hook\BypassFinalHook"/>
-    </extensions>
 </phpunit>

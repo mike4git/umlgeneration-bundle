@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace UMLGenerationBundle\Tests\Unit\Formatter;
+namespace Tests\Unit\UMLGenerationBundle\Formatter;
 
 use PHPUnit\Framework\TestCase;
 use UMLGenerationBundle\Formatter\AttributeFormatter;
