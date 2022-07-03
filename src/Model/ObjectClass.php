@@ -61,4 +61,9 @@ class ObjectClass
 
         return $this;
     }
+
+    public function setBaseClass(): ObjectClass
+    {
+        return $this;
+    }
 }

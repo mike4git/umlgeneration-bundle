@@ -26,9 +26,9 @@ class ClassDefinition2UMLServiceTest extends TestCase
     {
         $this->service = new ClassDefinition2UMLService();
 
-        $this->classDefinition = $this->prophesize(ClassDefinition::class);
-        $this->classDefinition->getName()->willReturn('MyType');
-        $this->classDefinition->getId()->willReturn('type_id');
+        $this->classDefinition = new ClassDefinition();
+        $this->classDefinition->setName('MyType');
+        $this->classDefinition->setId('type_id');
     }
 
     /**
@@ -36,9 +36,9 @@ class ClassDefinition2UMLServiceTest extends TestCase
      */
     public function generateClassBox_classdefinition_without_fields(): void
     {
-        $this->classDefinition->getFieldDefinitions()->willReturn([]);
+        $this->classDefinition->setFieldDefinitions([]);
 
-        $this->service->generateClassBox($this->classDefinition->reveal());
+        $this->service->generateClassBox($this->classDefinition);
 
         $classes = $this->service->getClasses();
         $this->assertClasses($classes, ['MyType'], ['type_id'], ['DataObject'], [0]);
@@ -52,12 +52,14 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $fieldDefinition1 = $this->createFieldDefinitionMock('Field 1', 'string|null');
         $fieldDefinition2 = $this->createFieldDefinitionMock('Field 2', 'int|null');
 
-        $this->classDefinition->getFieldDefinitions()->willReturn([
-            'field1' => $fieldDefinition1->reveal(),
-            'field2' => $fieldDefinition2->reveal(),
-        ]);
+        $this->classDefinition->setFieldDefinitions(
+            [
+                'field1' => $fieldDefinition1->reveal(),
+                'field2' => $fieldDefinition2->reveal(),
+            ],
+        );
 
-        $this->service->generateClassBox($this->classDefinition->reveal());
+        $this->service->generateClassBox($this->classDefinition);
 
         $objectClasses = $this->service->getClasses();
         $this->assertClasses(
@@ -94,11 +96,11 @@ class ClassDefinition2UMLServiceTest extends TestCase
         ]);
         $fieldDefinition->getMandatory()->willReturn(false);
 
-        $this->classDefinition->getFieldDefinitions()->willReturn([
+        $this->classDefinition->setFieldDefinitions([
             'field1' => $fieldDefinition->reveal(),
         ]);
 
-        $this->service->generateClassBox($this->classDefinition->reveal());
+        $this->service->generateClassBox($this->classDefinition);
 
         $objectClasses = $this->service->getClasses();
         $this->assertClasses(
@@ -117,7 +119,7 @@ class ClassDefinition2UMLServiceTest extends TestCase
             [''],
         );
 
-        $this->service->generateRelations($this->classDefinition->reveal());
+        $this->service->generateRelations($this->classDefinition);
         $this->assertRelations(
             $this->service->getRelations(),
             ['MyType'],
@@ -161,11 +163,11 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $fieldDefinition->getMandatory()->willReturn($mandatory);
         $fieldDefinition->getMaxItems()->willReturn($maxItems);
 
-        $this->classDefinition->getFieldDefinitions()->willReturn([
+        $this->classDefinition->setFieldDefinitions([
             'field1' => $fieldDefinition->reveal(),
         ]);
 
-        $this->service->generateClassBox($this->classDefinition->reveal());
+        $this->service->generateClassBox($this->classDefinition);
 
         $objectClasses = $this->service->getClasses();
         $this->assertClasses(
@@ -184,7 +186,7 @@ class ClassDefinition2UMLServiceTest extends TestCase
             [''],
         );
 
-        $this->service->generateRelations($this->classDefinition->reveal());
+        $this->service->generateRelations($this->classDefinition);
         $this->assertRelations(
             $this->service->getRelations(),
             ['MyType'],
@@ -192,7 +194,7 @@ class ClassDefinition2UMLServiceTest extends TestCase
             ['the Others'],
             [''],
             [$mandatory ? '1' : '0'],
-            [(string) $maxItems],
+            [(string)$maxItems],
         );
     }
 
@@ -206,11 +208,11 @@ class ClassDefinition2UMLServiceTest extends TestCase
         $fieldDefinition2 = $this->createFieldDefinitionMock('Field 2', 'int|null');
         $fieldDefinition->getChildren()->willReturn([$fieldDefinition1->reveal(), $fieldDefinition2->reveal()]);
 
-        $this->classDefinition->getFieldDefinitions()->willReturn([
+        $this->classDefinition->setFieldDefinitions([
             'localizedfields' => $fieldDefinition->reveal(),
         ]);
 
-        $this->service->generateClassBox($this->classDefinition->reveal());
+        $this->service->generateClassBox($this->classDefinition);
 
         $objectClasses = $this->service->getClasses();
         $this->assertClasses(
