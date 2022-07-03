@@ -3,7 +3,6 @@
 namespace UMLGenerationBundle\Handler\Relation;
 
 use ReflectionClass;
-use ReflectionProperty;
 use UMLGenerationBundle\Model\Relation;
 
 interface ClassRelationHandlerInterface

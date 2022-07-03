@@ -67,6 +67,5 @@ class ClassExtendsHandlerTest extends TestCase
 
         self::assertCount(1, $relations);
         self::assertEquals($expectedRelation, $relations[0]);
-
     }
 }
