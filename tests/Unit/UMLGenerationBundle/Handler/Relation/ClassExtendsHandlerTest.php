@@ -3,12 +3,15 @@
 namespace UMLGenerationBundle\Tests\Unit\Handler\Relation;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use UMLGenerationBundle\Handler\Relation\ClassExtendsHandler;
 use UMLGenerationBundle\Model\Relation;
 
 class ClassExtendsHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     private ClassExtendsHandler $handler;
 
     /** @var \ReflectionClass|ObjectProphecy */
