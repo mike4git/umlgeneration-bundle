@@ -11,26 +11,39 @@ class ManyToManyRelationHandler implements PropertyRelationHandlerInterface
 {
     public function canHandle(ReflectionProperty $property): bool
     {
-        return $property->getType() instanceof \ReflectionNamedType
-            && ($property->getType()->getName() === 'array');
+        $result = false;
+        $declaredPropertyType = $property->getType();
+        if ($declaredPropertyType instanceof \ReflectionNamedType
+            && ($declaredPropertyType->getName() === 'array')) {
+            /** @var class-string<mixed> $docTypeAsString */
+            $docTypeAsString = substr($this->determineType($property), 0, -\strlen('[]'));
+
+            if (!\in_array($docTypeAsString, ['string', 'int', 'bool'], true)) {
+                // check further conditions
+                return true;
+            }
+        }
+
+        return $result;
     }
 
     public function handle(ReflectionProperty $property, ReflectionClass $reflection, array &$relations): void
     {
+        /** @var class-string<mixed> $docTypeAsString */
         $docTypeAsString = substr($this->determineType($property), 0, -\strlen('[]'));
 
         if (!\in_array($docTypeAsString, ['string', 'int', 'bool'], true)) {
             try {
                 $reflectionClass = new \ReflectionClass($docTypeAsString);
-            } catch (\ReflectionException) {
+            } catch (\ReflectionException) { //@phpstan-ignore-line
                 try {
-                    $reflectionClass = new \ReflectionClass('UMLGenerationBundle\\Tests\\Unit\\Service\\' . $docTypeAsString);
+                    $reflectionClass = new \ReflectionClass('UMLGenerationBundle\\Tests\\Data\\' . $docTypeAsString);
                 } catch (\ReflectionException $e) {
                     $reflectionClass = null;
                 }
             }
 
-            if ($reflectionClass) {
+            if ($reflectionClass) { //@phpstan-ignore-line
                 // add Relation
                 $relation = new Relation();
                 $minimum = 0;
