@@ -7,6 +7,7 @@ class ObjectClass
 {
     private string $className;
     private string $classId;
+    private string $baseClass;
     private string $stereotype;
     /** @var Attribute[] */
     private array $attributes = [];
@@ -62,8 +63,15 @@ class ObjectClass
         return $this;
     }
 
-    public function setBaseClass(): ObjectClass
+    public function getBaseClass(): string
     {
+        return $this->baseClass;
+    }
+
+    public function setBaseClass(string $baseClass): ObjectClass
+    {
+        $this->baseClass = $baseClass;
+
         return $this;
     }
 }

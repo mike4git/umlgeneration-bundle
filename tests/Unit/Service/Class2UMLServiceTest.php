@@ -13,6 +13,9 @@ use UMLGenerationBundle\Model\Attribute;
 use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
 use UMLGenerationBundle\Service\Class2UMLService;
+use UMLGenerationBundle\Tests\Data\SubTestClass;
+use UMLGenerationBundle\Tests\Data\TestClass;
+use UMLGenerationBundle\Tests\Data\TestClassForRelations;
 
 class Class2UMLServiceTest extends TestCase
 {
@@ -73,7 +76,7 @@ class Class2UMLServiceTest extends TestCase
 
         $expected = new ObjectClass();
         $expected->setClassName('TestClass');
-        $expected->setClassId('UMLGenerationBundle\Tests\Unit\Service\TestClass');
+        $expected->setClassId('UMLGenerationBundle\Tests\Data\TestClass');
         $expected->setStereotype('');
 
         $actualClassBox = array_values($this->service->getClasses())[0];
@@ -90,7 +93,7 @@ class Class2UMLServiceTest extends TestCase
         );
     }
 
-    public function sampleRelations()
+    public function sampleRelations(): iterable  //@phpstan-ignore-line
     {
         yield 'Many to one aggregation' => [
             0, 'TestClassForRelations', 'TestClass', 'parent', false, true, 1, 1,
@@ -146,7 +149,7 @@ class Class2UMLServiceTest extends TestCase
         $expectedClassBox = new ObjectClass();
         $expectedClassBox->setClassName('SubTestClass')
             ->setBaseClass('BaseTestClass')
-            ->setClassId('UMLGenerationBundle\Tests\Unit\Service\SubTestClass')
+            ->setClassId('UMLGenerationBundle\Tests\Data\SubTestClass')
             ->setStereotype('');
 
         $expectedRelation = new Relation();
@@ -155,7 +158,7 @@ class Class2UMLServiceTest extends TestCase
             ->setAggregation(false)
             ->setBidirectional(true);
 
-        self::assertEquals($expectedClassBox, $this->service->getClasses()['UMLGenerationBundle\Tests\Unit\Service\SubTestClass']);
+        self::assertEquals($expectedClassBox, $this->service->getClasses()['UMLGenerationBundle\Tests\Data\SubTestClass']);
         self::assertEquals($expectedRelation, $this->service->getRelations()[0]);
     }
 
@@ -189,34 +192,4 @@ class Class2UMLServiceTest extends TestCase
             ->setMinimum($minimum)
             ->setMaximum($maximum);
     }
-}
-
-class TestClass
-{
-    public float $attribute3;
-    protected int $attribute2;
-    protected int|string|null $unionTypedAttribute;
-    private string $attribute1; // @phpstan-ignore-line
-    private static $classAttribute;  // @phpstan-ignore-line
-    /** @var string[] */
-    private array $arrayAttribute;  // @phpstan-ignore-line
-    private array $arrayWithoutDocAttribute;  // @phpstan-ignore-line
-    private $attributeWithoutType;  // @phpstan-ignore-line
-}
-
-class SubTestClass extends BaseTestClass
-{
-}
-
-class BaseTestClass
-{
-}
-
-class TestClassForRelations
-{
-    private TestClass $parent;
-    private ?TestClass $nullableParent;
-
-    /** @var TestClass[] */
-    private array $children;
 }

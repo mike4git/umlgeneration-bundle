@@ -6,16 +6,21 @@ use UMLGenerationBundle\Model\Relation;
 
 final class ClassExtendsHandler implements ClassRelationHandlerInterface
 {
-    public function canHandle(\ReflectionClass $reflection): bool
+    public function canHandle(\ReflectionClass $reflectionClass): bool
     {
-        return (bool)$reflection->getParentClass();
+        return (bool)$reflectionClass->getParentClass();
     }
 
-    public function handle(\ReflectionClass $reflection, array &$relations): void
+    /**
+     * @param Relation[] $relations
+     */
+    public function handle(\ReflectionClass $reflectionClass, array &$relations): void
     {
+        /** @var \ReflectionClass $parentClass */
+        $parentClass = $reflectionClass->getParentClass();
         $expectedRelation = new Relation();
-        $expectedRelation->setSourceType($reflection->getShortName())
-            ->setTargetType($reflection->getParentClass()->getShortName())
+        $expectedRelation->setSourceType($reflectionClass->getShortName())
+            ->setTargetType($parentClass->getShortName())
             ->setAggregation(false)
             ->setBidirectional(true);
 

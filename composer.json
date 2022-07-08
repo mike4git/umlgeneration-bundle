@@ -27,6 +27,7 @@
   },
   "autoload-dev": {
     "psr-4": {
+      "UMLGenerationBundle\\Tests\\Data\\": "tests/Data/",
       "UMLGenerationBundle\\Tests\\Unit\\": "tests/Unit/",
       "UMLGenerationBundle\\Tests\\Integration\\": "tests/Integration/"
     }

@@ -19,8 +19,7 @@ class ClassDefinition2UMLServiceTest extends TestCase
 
     private ClassDefinition2UMLService $service;
 
-    /** @var ClassDefinition|ObjectProphecy */
-    private $classDefinition;
+    private ClassDefinition $classDefinition;
 
     protected function setUp(): void
     {
@@ -49,13 +48,14 @@ class ClassDefinition2UMLServiceTest extends TestCase
      */
     public function generateClassBox_classdefinition_with_multiple_non_localized_fields(): void
     {
+        /** @var ObjectProphecy<ClassDefinition\Data> $fieldDefinition1 */
         $fieldDefinition1 = $this->createFieldDefinitionMock('Field 1', 'string|null');
+        /** @var ObjectProphecy<ClassDefinition\Data> $fieldDefinition2 */
         $fieldDefinition2 = $this->createFieldDefinitionMock('Field 2', 'int|null');
 
         $this->classDefinition->setFieldDefinitions(
             [
-                'field1' => $fieldDefinition1->reveal(),
-                'field2' => $fieldDefinition2->reveal(),
+                $fieldDefinition1->reveal(), $fieldDefinition2->reveal(),
             ],
         );
 
