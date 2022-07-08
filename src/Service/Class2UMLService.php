@@ -30,9 +30,10 @@ class Class2UMLService
      * @param PropertyRelationHandlerInterface[] $propertyRelationsHandler
      */
     public function __construct(
-        private array $propertyRelationsHandler,
+        private array               $propertyRelationsHandler,
         private ClassExtendsHandler $classExtendsHandler,
-    ) {
+    )
+    {
     }
 
     public function generateClassBox(string $class): void
@@ -43,6 +44,9 @@ class Class2UMLService
         $classBox->setClassName($reflection->getShortName());
         $classBox->setClassId($reflection->getName());
         $classBox->setStereotype('');
+        if ($reflection->getParentClass()) {
+            $classBox->setBaseClass($reflection->getParentClass()->getShortName());
+        }
 
         if ($this->classExtendsHandler->canHandle($reflection)) {
             $this->classExtendsHandler->handle($reflection, $this->relations);
