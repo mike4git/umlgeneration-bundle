@@ -53,11 +53,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
         /** @var ObjectProphecy<ClassDefinition\Data> $fieldDefinition2 */
         $fieldDefinition2 = $this->createFieldDefinitionMock('Field 2', 'int|null');
 
-        $this->classDefinition->setFieldDefinitions(
-            [
-                $fieldDefinition1->reveal(), $fieldDefinition2->reveal(),
-            ],
-        );
+        $this->classDefinition->addFieldDefinition('field1', $fieldDefinition1->reveal());
+        $this->classDefinition->addFieldDefinition('field2', $fieldDefinition2->reveal());
 
         $this->service->generateClassBox($this->classDefinition);
 
