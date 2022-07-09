@@ -21,8 +21,9 @@ final class ClassExtendsHandler implements ClassRelationHandlerInterface
         $expectedRelation = new Relation();
         $expectedRelation->setSourceType($reflectionClass->getShortName())
             ->setTargetType($parentClass->getShortName())
+            ->setInheritance(true)
             ->setAggregation(false)
-            ->setBidirectional(true);
+            ->setBidirectional(false);
 
         $relations[] = $expectedRelation;
     }

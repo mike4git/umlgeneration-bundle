@@ -62,8 +62,9 @@ class ClassExtendsHandlerTest extends TestCase
         $expectedRelation = new Relation();
         $expectedRelation->setSourceType('MyClass');
         $expectedRelation->setTargetType('BaseClass');
-        $expectedRelation->setBidirectional(true);
+        $expectedRelation->setBidirectional(false);
         $expectedRelation->setAggregation(false);
+        $expectedRelation->setInheritance(true);
 
         self::assertCount(1, $relations);
         self::assertEquals($expectedRelation, $relations[0]);

@@ -22,39 +22,45 @@ class RelationsFormatterTest extends TestCase
     public function sampleRelations(): iterable
     {
         yield '1:4 - unidirektionale Aggregation' => [
-            false, true, 1, 4,
+            false, true, false, 1, 4,
             <<<EXPECTED
             MyType -> TargetType [dir=both arrowtail=odiamond label="my targets (1..4)"];
             EXPECTED,
         ];
         yield '1:n - unidirektionale Aggregation' => [
-            false, true, 1, null,
+            false, true, false, 1, null,
             <<<EXPECTED
             MyType -> TargetType [dir=both arrowtail=odiamond label="my targets (1..n)"];
             EXPECTED,
         ];
         yield '1:1 - unidirektionale Aggregation' => [
-            false, true, 1, 1,
+            false, true, false, 1, 1,
             <<<EXPECTED
             MyType -> TargetType [dir=both arrowtail=odiamond label="my targets (1)"];
             EXPECTED,
         ];
         yield '1:4 - bidirektionale Aggregation' => [
-            true, true, 1, 4,
+            true, true, false, 1, 4,
             <<<EXPECTED
             MyType -> TargetType [dir=none arrowtail=odiamond label="my targets (1..4)"];
             EXPECTED,
         ];
         yield '1:n - bidirektionale Aggregation' => [
-            true, true, 1, null,
+            true, true, false, 1, null,
             <<<EXPECTED
             MyType -> TargetType [dir=none arrowtail=odiamond label="my targets (1..n)"];
             EXPECTED,
         ];
         yield '1:1 - bidirektionale Aggregation' => [
-            true, true, 1, 1,
+            true, true, false, 1, 1,
             <<<EXPECTED
             MyType -> TargetType [dir=none arrowtail=odiamond label="my targets (1)"];
+            EXPECTED,
+        ];
+        yield 'Direkte Vererbung mit extends' => [
+            false, false, true, null, null,
+            <<<EXPECTED
+            MyType -> TargetType [dir=both arrowtail=none label="<<extends>>"];
             EXPECTED,
         ];
     }
@@ -67,6 +73,7 @@ class RelationsFormatterTest extends TestCase
     public function format_regular_case(
         bool $bidirectional,
         bool $aggregation,
+        bool $inheritance,
         ?int $min,
         ?int $max,
         string $expected,
@@ -76,6 +83,7 @@ class RelationsFormatterTest extends TestCase
             ->setTargetType('TargetType')
             ->setBidirectional($bidirectional)
             ->setAggregation($aggregation)
+            ->setInheritance($inheritance)
             ->setSourceRolename('my targets')
             ->setMinimum($min)
             ->setMaximum($max);

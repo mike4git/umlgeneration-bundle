@@ -8,7 +8,8 @@ class Relation
     private string $sourceType;
     private string $targetType;
     private bool $bidirectional = false;
-    private bool $aggregation;
+    private bool $aggregation = false;
+    private bool $inheritance = false;
     private string $sourceRolename = '';
     private string $targetRolename = '';
     private ?int $minimum = null;
@@ -107,6 +108,17 @@ class Relation
     {
         $this->targetRolename = $targetRolename;
 
+        return $this;
+    }
+
+    public function isInheritance(): bool
+    {
+        return $this->inheritance;
+    }
+
+    public function setInheritance(bool $inheritance): Relation
+    {
+        $this->inheritance = $inheritance;
         return $this;
     }
 }
