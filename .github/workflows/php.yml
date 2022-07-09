@@ -48,13 +48,14 @@ jobs:
         verbose: true
 
   quality:
-    name: Quality Assurance
+    name: QualityAssurance
 
     runs-on: ubuntu-latest
 
+    steps:
     - name: Check CS-Fixer
       run: composer fix-cs:check
 
 
     - name: Check PHPStan
-    run: composer phpstan-gitlab
+      run: composer phpstan-gitlab
