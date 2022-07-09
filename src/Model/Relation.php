@@ -119,6 +119,7 @@ class Relation
     public function setInheritance(bool $inheritance): Relation
     {
         $this->inheritance = $inheritance;
+
         return $this;
     }
 }

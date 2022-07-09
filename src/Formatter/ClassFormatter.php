@@ -11,8 +11,7 @@ class ClassFormatter
 
     public function __construct(
         private AttributeFormatter $attributeFormatter,
-    )
-    {
+    ) {
     }
 
     public function format(ObjectClass $objectClass): string
@@ -59,8 +58,10 @@ class ClassFormatter
                 $result[] = $this->attributeFormatter->format($attribute);
             }
             $attributesAsString = self::INDENTATION . implode(PHP_EOL . str_repeat(self::INDENTATION, 5), $result) . PHP_EOL . str_repeat(self::INDENTATION, 4);
+
             return sprintf($template, $attributesAsString);
         }
+
         return '';
     }
 }
