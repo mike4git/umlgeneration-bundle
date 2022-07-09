@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      run: bin/composer validate --strict
 
     - name: Cache Composer packages
       id: composer-cache
@@ -31,7 +31,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: bin/composer install --prefer-dist --no-progress
 
   tests:
     name: Tests
@@ -42,8 +42,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Run tests with phpunit/phpunit
-        run: composer tests
+      - name: Run tests with phpunit
+        run: bin/composer tests
 
       - name: Send code coverage report to Codecov.io
         uses: codecov/codecov-action@v2
@@ -61,8 +61,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check CS-Fixer
-        run: composer fix-cs:check
+        run: bin/composer fix-cs:check
 
 
       - name: Check PHPStan
-        run: composer phpstan-gitlab
+        run: bin/composer phpstan-gitlab
