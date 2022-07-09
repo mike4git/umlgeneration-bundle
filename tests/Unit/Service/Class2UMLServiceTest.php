@@ -157,8 +157,7 @@ class Class2UMLServiceTest extends TestCase
         $expectedRelation = new Relation();
         $expectedRelation->setSourceType('SubTestClass')
             ->setTargetType('BaseTestClass')
-            ->setAggregation(false)
-            ->setBidirectional(true);
+            ->setInheritance(true);
 
         self::assertEquals($expectedClassBox, $this->service->getClasses()['UMLGenerationBundle\Tests\Data\SubTestClass']);
         self::assertEquals($expectedRelation, $this->service->getRelations()[0]);
