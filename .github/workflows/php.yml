@@ -36,10 +36,8 @@ jobs:
       run: composer fix-cs:check
 
     - name: Run test suite
-      run: composer tests
-
-    - name: Upload to Codecov
       uses: codecov/codecov-action@v2
+      run: composer tests
       with:
         token: 56f489e7-c92b-4851-bfc6-5fa9a93f0426
         files: reports/clover.xml
