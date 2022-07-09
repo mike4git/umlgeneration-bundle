@@ -30,10 +30,6 @@ class ClassFormatterTest extends TestCase
                 label=<
                     <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
                         <tr><td>&lt;DataObject&gt;<br/><b>MyType (ID: my_type)</b></td></tr>
-                        <tr><td>
-                            <table border="0" cellborder="0" cellspacing="0">
-                            </table>
-                        </td></tr>
                     </table>
                 >
             ];
