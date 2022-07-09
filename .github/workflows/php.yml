@@ -32,11 +32,18 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Check CS-Fixer
+      run: composer fix-cs:check
+
     - name: Run test suite
       run: composer tests
 
-    - name: Check CS-Fixer
-      run: composer fix-cs:check
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: 56f489e7-c92b-4851-bfc6-5fa9a93f0426
+        files: ./coverage.xml
+        verbose: true
 
     - name: Check PHPStan
       run: composer phpstan-gitlab
