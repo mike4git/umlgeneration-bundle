@@ -16,31 +16,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Validate composer.json and composer.lock
-      run: bin/composer validate --strict
+      - name: Validate composer.json and composer.lock
+        run: bin/composer validate --strict
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Install dependencies
-      run: bin/composer install --prefer-dist --no-progress
-
-  tests:
-    name: Tests
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: bin/composer install --prefer-dist --no-progress
 
       - name: Run tests with phpunit
         run: bin/composer tests
@@ -50,7 +41,6 @@ jobs:
         with:
           token: 56f489e7-c92b-4851-bfc6-5fa9a93f0426
           files: reports/clover.xml
-
 
   quality:
     name: QualityAssurance
