@@ -42,14 +42,6 @@ jobs:
           token: 56f489e7-c92b-4851-bfc6-5fa9a93f0426
           files: reports/clover.xml
 
-  quality:
-    name: QualityAssurance
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
       - name: Check CS-Fixer
         run: bin/composer fix-cs:check
 
