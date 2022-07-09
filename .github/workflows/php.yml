@@ -35,8 +35,15 @@ jobs:
     - name: Check CS-Fixer
       run: composer fix-cs:check
 
-    - name: Run test suite
-      run: composer tests
+    - name: Run PHPUnit Tests
+      uses: php-actions/phpunit@v3
+      env:
+        XDEBUG_MODE: coverage
+      with:
+        bootstrap: vendor/autoload.php
+        configuration: phpunit.xml
+        php_extensions: xdebug
+        args: tests --coverage-clover ./reports/coverage.xml
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2

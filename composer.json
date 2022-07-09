@@ -56,6 +56,6 @@
     "fix-cs:check": "php-cs-fixer fix --dry-run --diff",
     "phpstan": "phpstan analyse --level=${PHPSTAN_LEVEL:-8} -c phpstan.neon",
     "phpstan-gitlab": "phpstan analyse -c phpstan.neon --memory-limit=1G --no-progress --level=${PHPSTAN_LEVEL:-8} --error-format=gitlab > reports/codeclimate.json",
-    "tests": "phpunit --coverage-text --colors=never --log-junit=reports/coverage.xml --coverage-clover=reports/clover.xml --coverage-html=reports/coverage tests"
+    "tests": "phpunit --coverage-text --colors=never --log-junit=reports/junit.xml --coverage-clover=reports/clover.xml --coverage-html=reports/coverage tests"
   }
 }

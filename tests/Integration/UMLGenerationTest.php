@@ -42,7 +42,7 @@ final class UMLGenerationTest extends TestCase
 
         $print = $printerService->print($class2UMLService->getClasses(), []);
 
-        file_put_contents(__DIR__ . '/../Data/result.dot', $print);
+        // file_put_contents(__DIR__ . '/../Data/result.dot', $print);
         self::assertNotEmpty($print);
     }
 }
