@@ -18,6 +18,9 @@ class RelationsFormatter
 
             $dir = sprintf('dir=%s', $relation->isBidirectional() ? 'none' : 'both');
 
+            $arrow = '';
+            $label = '';
+
             if ($relation->isInheritance()) {
                 $arrow = 'arrowtail=none';
                 $label = 'label="<<extends>>"';
