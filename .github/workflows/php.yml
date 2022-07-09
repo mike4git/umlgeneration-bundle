@@ -42,7 +42,7 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         token: 56f489e7-c92b-4851-bfc6-5fa9a93f0426
-        files: ./coverage.xml
+        files: ./reports/coverage.xml
         verbose: true
 
     - name: Check PHPStan
