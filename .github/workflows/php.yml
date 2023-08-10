@@ -47,9 +47,7 @@ jobs:
         run: composer cs:check
 
       - name: Check PHPStan
-        run: |
-          php tests/app/bin/console cache:clear
-          composer phpstan
+        run: composer phpstan
 
       - name: Execute tests
         run: composer tests
