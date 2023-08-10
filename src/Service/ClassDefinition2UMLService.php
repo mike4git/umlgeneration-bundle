@@ -44,7 +44,7 @@ class ClassDefinition2UMLService
                 /** @var ClassDefinition\Data $definition */
                 foreach ($locFieldDef->getChildren() as $definition) {
                     $attribute = new Attribute();
-                    $attribute->setName($definition->getName())
+                    $attribute->setName($definition->getName() ?? self::UNKNOWN)
                         ->setType($definition->getPhpdocReturnType() ?? self::UNKNOWN)
                         ->setModifier('protected')
                         ->setAdditionalInfo('localized');
