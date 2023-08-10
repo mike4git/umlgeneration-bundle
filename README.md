@@ -9,26 +9,8 @@ generates UML class diagrams and more based upon your class definitions
 Before you can use the Bundle, you need to add the git repository to your composer.json
 
 
-```JSON
-// composer.json
-{
-  "require": {
-    "mike4git/umlgeneration-bundle": "dev-main"
-  },
-  ...
-  "autoload": {
-    "psr-4": {
-      ...
-      "Neusta\\Pimcore\\UMLGenerationBundle\\": "bundles/Neusta/Pimcore/UMLGenerationBundle/src"
-    }
-  ...
-  "repositories": {
-    "uml-generation-bundle": {
-      "type": "git",
-      "url": "https://github.com/mike4git/umlgeneration-bundle.git"
-    }
-  },
-}
+```SHELL
+composer require "mike4git/umlgeneration-bundle"
 ```
 
 Additionally, you'll have to install GraphViz (`dot` executable).
@@ -52,7 +34,12 @@ $ php bin/console uml:generate -o myDotfileName
 ```
 Note that this will generate a myDotfileName.dot file
 
-
 #### Generate Graph:
 ```bash
 $ dot -Tsvg myDotfileName.dot -o image.svg
+```
+After that you should see something like this:
+
+![Sample UML class diagram](doc/images/result.png)
+
+Done.
