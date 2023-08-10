@@ -50,8 +50,6 @@ jobs:
           - php-version: "8.1"
             dependencies: "highest"
           - php-version: "8.2"
-            dependencies: "lowest"
-          - php-version: "8.2"
             dependencies: "highest"
 
     steps:
