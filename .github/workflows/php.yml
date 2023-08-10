@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  CompatibilityJobs:
+  TestsCompatibilityJobs:
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,12 +19,8 @@ jobs:
         include:
           - php-version: "8.0"
             dependencies: "lowest"
-          - php-version: "8.0"
-            dependencies: "highest"
           - php-version: "8.1"
-            dependencies: "highest"
-          - php-version: "8.2"
-            dependencies: "highest"
+            dependencies: "lowest"
 
     steps:
       - name: Git Checkout
@@ -46,15 +42,13 @@ jobs:
       - name: Execute tests
         run: composer tests
 
-  QaJobs:
+  TestsAndQaJobs:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          - php-version: "8.1"
-            dependencies: "lowest"
           - php-version: "8.1"
             dependencies: "highest"
           - php-version: "8.2"
@@ -82,3 +76,6 @@ jobs:
 
       - name: Check PHPStan
         run: composer phpstan
+
+      - name: Execute tests
+        run: composer tests
