@@ -68,6 +68,7 @@ class Class2UMLServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleAttributes
      */
     public function generateClassBoxForClass(int $attributeIndex, string $name, string $type, string $modifier, bool $static): void
@@ -108,6 +109,7 @@ class Class2UMLServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleRelations
      */
     public function generateRelationsForClasses(

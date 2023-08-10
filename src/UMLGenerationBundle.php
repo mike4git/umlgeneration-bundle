@@ -7,6 +7,9 @@ use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 
 class UMLGenerationBundle extends AbstractPimcoreBundle
 {
+    /**
+     * @return array<string>
+     */
     public function getJsPaths(): array
     {
         return [

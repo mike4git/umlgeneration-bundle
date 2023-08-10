@@ -43,11 +43,8 @@ class ClassFormatterTest extends TestCase
 
     /**
      * @test
-     * @dataProvider sampleClass
      *
-     * @param $className
-     * @param $classId
-     * @param $stereotype
+     * @dataProvider sampleClass
      */
     public function format_regular_case(
         string $className,

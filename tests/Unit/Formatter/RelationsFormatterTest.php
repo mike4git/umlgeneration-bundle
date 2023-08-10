@@ -61,6 +61,7 @@ class RelationsFormatterTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleRelations
      */
     public function format_regular_case(

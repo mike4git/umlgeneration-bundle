@@ -141,9 +141,8 @@ class ClassDefinition2UMLServiceTest extends TestCase
 
     /**
      * @test
-     * @dataProvider combinationsOfFieldDefs
      *
-     * @param $mandatory
+     * @dataProvider combinationsOfFieldDefs
      */
     public function generateClassBox_classdefinition_with_manytomany_relation_field(bool $mandatory, ?int $maxItems, string $cardinality): void
     {
