@@ -28,6 +28,7 @@ class ManyToManyRelationHandlerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleScenarios
      *
      * @param class-string<mixed> $class
