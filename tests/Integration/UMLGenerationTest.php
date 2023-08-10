@@ -15,6 +15,8 @@ use UMLGenerationBundle\Model\ObjectClass;
 use UMLGenerationBundle\Model\Relation;
 use UMLGenerationBundle\Service\Class2UMLService;
 use UMLGenerationBundle\Service\PrinterService;
+use UMLGenerationBundle\Tests\Data\BaseTestClass;
+use UMLGenerationBundle\Tests\Data\SubTestClass;
 
 final class UMLGenerationTest extends TestCase
 {
@@ -35,14 +37,17 @@ final class UMLGenerationTest extends TestCase
         $class2UMLService->generateClassBox(Attribute::class);
         $class2UMLService->generateClassBox(Relation::class);
 
+        $class2UMLService->generateClassBox(BaseTestClass::class);
+        $class2UMLService->generateClassBox(SubTestClass::class);
+
         $printerService = new PrinterService(
             new ClassFormatter(new AttributeFormatter()),
             new RelationsFormatter(),
         );
 
-        $print = $printerService->print($class2UMLService->getClasses(), []);
+        $print = $printerService->print($class2UMLService->getClasses(), $class2UMLService->getRelations());
 
-        // file_put_contents(__DIR__ . '/../Data/result.dot', $print);
+        file_put_contents(__DIR__ . '/../Data/result.dot', $print);
         self::assertNotEmpty($print);
     }
 }

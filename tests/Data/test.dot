@@ -1,0 +1,11 @@
+title: Converter-Populator-Pattern
+Client -> Converter: convert(SourceType)
+Converter -> TargetTypeFactory: create()
+TargetTypeFactory -->> Converter: TargetType (empty)
+Converter -> Populators: populate(target, source)
+Note right of Populators: Some of these Populators \nmay use Converters again
+Populators -> Other Converters: convert(Other SourceType)
+Other Converters -> ...:
+... -->> Other Converters:
+Other Converters -->> Populators: Other TargetType
+Converter -->> Client: TargetType (filled)
