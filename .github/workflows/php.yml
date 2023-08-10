@@ -19,8 +19,6 @@ jobs:
         include:
           - php-version: "8.0"
             dependencies: "lowest"
-          - php-version: "8.1"
-            dependencies: "lowest"
 
     steps:
       - name: Git Checkout
@@ -51,6 +49,8 @@ jobs:
         include:
           - php-version: "8.1"
             dependencies: "highest"
+          - php-version: "8.2"
+            dependencies: "lowest"
           - php-version: "8.2"
             dependencies: "highest"
 
