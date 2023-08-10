@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  TestAndQaJobs:
+  CompatibilityJobs:
     runs-on: ubuntu-latest
 
     strategy:
@@ -43,11 +43,42 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
+      - name: Execute tests
+        run: composer tests
+
+  QaJobs:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: "8.1"
+            dependencies: "lowest"
+          - php-version: "8.1"
+            dependencies: "highest"
+          - php-version: "8.2"
+            dependencies: "highest"
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: PHP Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
       - name: Check CS-Fixer
         run: composer cs:check
 
       - name: Check PHPStan
         run: composer phpstan
-
-      - name: Execute tests
-        run: composer tests
