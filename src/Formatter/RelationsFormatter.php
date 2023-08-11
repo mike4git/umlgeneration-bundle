@@ -17,16 +17,19 @@ class RelationsFormatter
             $name = sprintf('%s -> %s', $relation->getSourceType(), $relation->getTargetType());
 
             $dir = sprintf('dir=%s', $relation->isBidirectional() ? 'none' : 'both');
-            $arrow = sprintf('arrowtail=%s', $relation->isAggregation() ? 'odiamond' : 'normal');
-            $label = sprintf('label="%s %s"', $relation->getSourceRolename(), $this->determineCardinality($relation));
 
-            $result[] = sprintf(
-                '%s [%s %s %s];',
-                $name,
-                $dir,
-                $arrow,
-                $label,
-            );
+            $arrow = '';
+            $label = '';
+
+            if ($relation->isInheritance()) {
+                $arrow = 'arrowtail=none';
+                $label = 'label="<<extends>>"';
+            } elseif ($relation->isAggregation()) {
+                $arrow = 'arrowtail=odiamond';
+                $label = sprintf('label="%s %s"', $relation->getSourceRolename(), $this->determineCardinality($relation));
+            }
+
+            $result[] = sprintf('%s [%s %s %s];', $name, $dir, $arrow, $label);
         }
 
         return implode(PHP_EOL, $result);

@@ -61,6 +61,7 @@ class AttributeFormatterTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleAttribute
      */
     public function format_regular_case(

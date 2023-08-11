@@ -68,6 +68,7 @@ class Class2UMLServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleAttributes
      */
     public function generateClassBoxForClass(int $attributeIndex, string $name, string $type, string $modifier, bool $static): void
@@ -108,6 +109,7 @@ class Class2UMLServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider sampleRelations
      */
     public function generateRelationsForClasses(
@@ -155,8 +157,7 @@ class Class2UMLServiceTest extends TestCase
         $expectedRelation = new Relation();
         $expectedRelation->setSourceType('SubTestClass')
             ->setTargetType('BaseTestClass')
-            ->setAggregation(false)
-            ->setBidirectional(true);
+            ->setInheritance(true);
 
         self::assertEquals($expectedClassBox, $this->service->getClasses()['UMLGenerationBundle\Tests\Data\SubTestClass']);
         self::assertEquals($expectedRelation, $this->service->getRelations()[0]);

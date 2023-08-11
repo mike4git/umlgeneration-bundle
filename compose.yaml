@@ -1,0 +1,9 @@
+services:
+  php:
+    image: pimcore/pimcore:php8.2.8-v2.0
+    volumes:
+      - ./:/var/www/html/
+    environment:
+      XDEBUG_MODE: coverage
+    expose:
+      - 9003 # xdebug 3 port!

@@ -1,4 +1,4 @@
-name: PHP Composer
+name: test-and-qa
 
 on:
   push:
@@ -10,41 +10,70 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-
+  TestsCompatibilityJobs:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: "8.0"
+            dependencies: "lowest"
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: PHP Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
 
       - name: Validate composer.json and composer.lock
-        run: bin/composer validate --strict
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
+        run: composer validate --strict
 
       - name: Install dependencies
-        run: bin/composer install --prefer-dist --no-progress
-
-      - name: Run tests with phpunit
-        run: bin/composer tests
-
-      - name: Send code coverage report to Codecov.io
-        uses: codecov/codecov-action@v2
+        uses: ramsey/composer-install@v2
         with:
-          token: 56f489e7-c92b-4851-bfc6-5fa9a93f0426
-          files: reports/clover.xml
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Execute tests
+        run: composer tests
+
+  TestsAndQaJobs:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: "8.1"
+            dependencies: "highest"
+          - php-version: "8.2"
+            dependencies: "highest"
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+
+      - name: PHP Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
 
       - name: Check CS-Fixer
-        run: bin/composer fix-cs:check
-
+        run: composer cs:check
 
       - name: Check PHPStan
-        run: bin/composer phpstan-gitlab
+        run: composer phpstan
+
+      - name: Execute tests
+        run: composer tests

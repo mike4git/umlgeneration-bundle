@@ -12,7 +12,9 @@ Before you can use the Bundle, you need to add the git repository to your compos
 ```SHELL
 composer require "mike4git/umlgeneration-bundle"
 ```
+
 and add it to your bundles.php:
+
 ```php
 <?php declare(strict_types=1);
 
@@ -46,8 +48,8 @@ Note that this will generate a myDotfileName.dot file
 #### Generate Graph:
 ```bash
 $ dot -Tsvg myDotfileName.dot -o image.svg
-
 ```
+
 After that you should see something like this:
 
 ![Sample UML class diagram](doc/images/result.png)
