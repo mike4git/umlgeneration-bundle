@@ -17,10 +17,10 @@ class UMLGenerationCommand extends AbstractCommand
     private const COMMAND_NAME = 'uml:generate';
 
     public function __construct(
-        string $name = null,
         private ClassDefinitionsRepositoryInterface $classDefinitionsRepository,
         private ClassDefinition2UMLService $classDefinition2UMLService,
         private PrinterService $printerService,
+        string $name = null,
     ) {
         parent::__construct($name);
     }

@@ -106,20 +106,22 @@ class ClassDefinition2UMLService
     private function addRelation(mixed $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
     {
         // TODO Check cases where $fieldDefinition->getClasses() has more than one item
-        /** @var string $class */
-        $class = $fieldDefinition->getClasses()[0]['classes'];
-        $relation->setSourceType($classDefinition->getName() ?? self::UNKNOWN)
-            ->setTargetType($class)
-            ->setSourceRolename($fieldDefinition->getTitle())
-            ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
+        if (!empty($fieldDefinition->getClasses())) {
+            /** @var string $class */
+            $class = $fieldDefinition->getClasses()[0]['classes'];
+            $relation->setSourceType($classDefinition->getName() ?? self::UNKNOWN)
+                ->setTargetType($class)
+                ->setSourceRolename($fieldDefinition->getTitle())
+                ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
 
-        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
+            $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
 
-        // if relation already exists it must be bidirectional
-        if (\array_key_exists($relationsKey, $this->relations)) {
-            $relation->setBidirectional(true);
+            // if relation already exists it must be bidirectional
+            if (\array_key_exists($relationsKey, $this->relations)) {
+                $relation->setBidirectional(true);
+            }
+            $this->relations[$relationsKey] = $relation;
         }
-        $this->relations[$relationsKey] = $relation;
     }
 
     private function addReverseRelation(ClassDefinition\Data\ReverseObjectRelation $fieldDefinition, Relation $relation, ClassDefinition $classDefinition): void
