@@ -12,6 +12,15 @@ Before you can use the Bundle, you need to add the git repository to your compos
 ```SHELL
 composer require "mike4git/umlgeneration-bundle"
 ```
+and add it to your bundles.php:
+```php
+<?php declare(strict_types=1);
+
+return [
+    // mostly dev environment is enough
+    \UMLGenerationBundle\UMLGenerationBundle::class => ['dev' => true],
+];
+```
 
 Additionally, you'll have to install GraphViz (`dot` executable).
 Users of Debian/Ubuntu-based distributions may simply invoke:
@@ -37,6 +46,7 @@ Note that this will generate a myDotfileName.dot file
 #### Generate Graph:
 ```bash
 $ dot -Tsvg myDotfileName.dot -o image.svg
+
 ```
 After that you should see something like this:
 
