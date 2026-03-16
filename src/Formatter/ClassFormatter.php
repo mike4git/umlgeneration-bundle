@@ -16,7 +16,7 @@ class ClassFormatter
 
     public function format(ObjectClass $objectClass): string
     {
-        $labelDeclaration = sprintf(
+        $labelDeclaration = \sprintf(
             <<<HTML
             <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
                         <tr><td>&lt;DataObject&gt;<br/><b>%s (ID: %s)</b></td></tr>%s
@@ -27,7 +27,7 @@ class ClassFormatter
             $this->formatAttributes($objectClass),
         );
 
-        return sprintf(
+        return \sprintf(
             <<<BOX
             %s [
                 shape=plain
@@ -59,7 +59,7 @@ class ClassFormatter
             }
             $attributesAsString = self::INDENTATION . implode(PHP_EOL . str_repeat(self::INDENTATION, 5), $result) . PHP_EOL . str_repeat(self::INDENTATION, 4);
 
-            return sprintf($template, $attributesAsString);
+            return \sprintf($template, $attributesAsString);
         }
 
         return '';

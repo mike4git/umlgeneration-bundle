@@ -18,14 +18,14 @@ class AttributeFormatter
     {
         $additionalInfo = '';
         if ($attribute->getAdditionalInfo()) {
-            $additionalInfo = sprintf(' (%s)', $attribute->getAdditionalInfo());
+            $additionalInfo = \sprintf(' (%s)', $attribute->getAdditionalInfo());
         }
 
         if ($attribute->getDefaultValue()) {
-            $additionalInfo .= sprintf(' = %s', $attribute->getDefaultValue());
+            $additionalInfo .= \sprintf(' = %s', $attribute->getDefaultValue());
         }
 
-        return sprintf(
+        return \sprintf(
             <<<TABLEROW
             <tr><td%s>%s %s</td><td>%s%s</td></tr>
             TABLEROW,

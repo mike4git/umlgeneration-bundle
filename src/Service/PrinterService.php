@@ -31,7 +31,7 @@ class PrinterService
         }
         OUTPUT;
 
-        return sprintf($output, $this->printClasses($classes), $this->printRelations($relations));
+        return \sprintf($output, $this->printClasses($classes), $this->printRelations($relations));
     }
 
     /**
