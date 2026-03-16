@@ -15,6 +15,9 @@
     "sort-packages": true,
     "allow-plugins": {
       "phpstan/extension-installer": true
+    },
+    "audit": {
+      "block-insecure": false
     }
   },
   "autoload": {
