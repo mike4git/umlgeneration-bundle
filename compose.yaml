@@ -1,6 +1,6 @@
 services:
   php:
-    image: pimcore/pimcore:php8.2.8-v2.0
+    image: pimcore/pimcore:php8.3-debug-latest
     volumes:
       - ./:/var/www/html/
     environment:

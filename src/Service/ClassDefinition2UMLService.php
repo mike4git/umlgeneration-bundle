@@ -114,7 +114,7 @@ class ClassDefinition2UMLService
                 ->setSourceRolename($fieldDefinition->getTitle())
                 ->setMinimum($fieldDefinition->getMandatory() ? 1 : 0);
 
-            $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
+            $relationsKey = \sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getName(), $relation->getTargetType());
 
             // if relation already exists it must be bidirectional
             if (\array_key_exists($relationsKey, $this->relations)) {
@@ -130,7 +130,7 @@ class ClassDefinition2UMLService
             ->setSourceRolename($fieldDefinition->getOwnerFieldName())
             ->setTargetType($classDefinition->getName() ?? self::UNKNOWN);
 
-        $relationsKey = sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
+        $relationsKey = \sprintf('%s.%s - %s', $relation->getSourceType(), $fieldDefinition->getOwnerFieldName(), $relation->getTargetType());
 
         // if relation exists already merge it otherwise
         if (\array_key_exists($relationsKey, $this->relations)) {

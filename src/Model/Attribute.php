@@ -61,9 +61,6 @@ class Attribute
         return $this;
     }
 
-    /**
-     * @return ?string
-     */
     public function getAdditionalInfo(): ?string
     {
         return $this->additionalInfo;

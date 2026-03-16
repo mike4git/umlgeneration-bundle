@@ -15,6 +15,9 @@
     "sort-packages": true,
     "allow-plugins": {
       "phpstan/extension-installer": true
+    },
+    "audit": {
+      "block-insecure": false
     }
   },
   "autoload": {
@@ -33,16 +36,16 @@
     }
   },
   "require": {
-    "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
+    "php": "~8.2.0 || ~8.3.0",
     "pimcore/pimcore": "^10.0 || ^11.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.8",
+    "jangregor/phpstan-prophecy": "^1.0",
     "phpspec/prophecy": "^1.11",
     "phpspec/prophecy-phpunit": "^2.0",
     "phpstan/extension-installer": "^1.1",
-    "jangregor/phpstan-prophecy": "^1.0",
-    "phpunit/phpunit": "^9.5"
+    "phpunit/phpunit": "^9.6.0"
   },
   "extra": {
     "pimcore": {
